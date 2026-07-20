@@ -30,11 +30,15 @@ yarn-debug.log*
 yarn-error.log*
 .pnpm-debug.log*
 
-# env files (can opt-in for committing if needed)
+# env files — nunca subir claves reales, pero sí la plantilla
 .env*
+!.env.example
 
 # vercel
 .vercel
+
+# mediapipe wasm assets (regenerados por scripts/copy-mediapipe-wasm.mjs en postinstall)
+/public/mediapipe/wasm/
 
 # typescript
 *.tsbuildinfo
