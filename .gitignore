@@ -38,7 +38,7 @@ yarn-error.log*
 .vercel
 
 # mediapipe wasm assets (regenerados por scripts/copy-mediapipe-wasm.mjs en postinstall)
-/public/mediapipe/wasm/
+/public/mediapipe/
 
 # typescript
 *.tsbuildinfo

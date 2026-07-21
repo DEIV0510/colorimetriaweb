@@ -22,7 +22,16 @@ export function getFaceLandmarker(): Promise<FaceLandmarker> {
 }
 
 async function createLandmarker(): Promise<FaceLandmarker> {
-  const vision = await FilesetResolver.forVisionTasks("/mediapipe/wasm");
+  // La ruta lleva la versión del paquete (la inyecta next.config.ts leyendo el
+  // package.json instalado), para poder cachear los ~11 MB de forma permanente
+  // sin arriesgar que un bump sirva binarios viejos contra un bundle nuevo.
+  const version = process.env.NEXT_PUBLIC_MEDIAPIPE_VERSION;
+  if (!version) {
+    throw new Error(
+      "Falta NEXT_PUBLIC_MEDIAPIPE_VERSION: revisa next.config.ts y reinstala las dependencias."
+    );
+  }
+  const vision = await FilesetResolver.forVisionTasks(`/mediapipe/${version}`);
   const options = (delegate: "GPU" | "CPU") =>
     ({
       baseOptions: {
