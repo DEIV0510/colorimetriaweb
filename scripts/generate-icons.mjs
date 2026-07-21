@@ -1,4 +1,5 @@
-// Genera los iconos PWA provisionales (wordmark "C" sobre marfil) sin dependencias externas.
+// Genera los iconos PWA provisionales sin dependencias externas: un anillo de
+// color (guiño a la rueda cromática) en el fucsia de Alma e Imagen sobre blush.
 import { mkdirSync, writeFileSync } from "node:fs";
 import { join, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
@@ -8,9 +9,9 @@ const __dirname = dirname(fileURLToPath(import.meta.url));
 const outDir = join(__dirname, "..", "public", "icons");
 mkdirSync(outDir, { recursive: true });
 
-const IVORY = [251, 247, 242];
-const CLAY = [193, 127, 104];
-const ESPRESSO = [46, 32, 25];
+const BLUSH = [255, 246, 250]; // #FFF6FA
+const BRAND = [214, 32, 126]; // #D6207E
+const INK = [42, 22, 34]; // #2A1622
 
 function crc32(buf) {
   let c;
@@ -79,11 +80,11 @@ function makeIcon(size, maskable) {
       const dist = Math.hypot(dx, dy);
       const angle = Math.atan2(dy, dx);
 
-      let color = IVORY;
+      let color = BLUSH;
       const inRing = dist <= outer && dist >= inner;
       const inNotch = Math.abs(angle) < notchHalfAngle;
-      if (inRing && !inNotch) color = CLAY;
-      else if (dist < inner * 0.34) color = ESPRESSO;
+      if (inRing && !inNotch) color = BRAND;
+      else if (dist < inner * 0.34) color = INK;
 
       pixels[i] = color[0];
       pixels[i + 1] = color[1];

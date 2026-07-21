@@ -11,13 +11,13 @@ export default function CamaraPage() {
       <div className="mb-4 flex items-center">
         <Link
           href="/preparacion"
-          className="flex items-center gap-1 text-sm text-stone hover:text-clay-dark"
+          className="flex items-center gap-1 text-sm text-ink-muted hover:text-brand-700"
         >
           <ArrowLeft size={16} strokeWidth={1.75} aria-hidden="true" />
           Volver
         </Link>
       </div>
-      <h1 className="mb-4 font-serif text-2xl font-semibold text-espresso">
+      <h1 className="mb-4 font-serif text-2xl font-semibold text-ink">
         Toma tu selfie
       </h1>
       <CameraCapture />

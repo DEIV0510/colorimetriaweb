@@ -52,12 +52,12 @@ export default function CuentaPage() {
   if (!isSupabaseConfigured) {
     return (
       <PageShell>
-        <h1 className="mb-3 font-serif text-2xl font-semibold text-espresso">Cuenta</h1>
-        <p className="mb-6 text-stone">
+        <h1 className="mb-3 font-serif text-2xl font-semibold text-ink">Cuenta</h1>
+        <p className="mb-6 text-ink-muted">
           Las cuentas todavía no están habilitadas en esta instalación. Puedes usar la
           aplicación completa como invitado.
         </p>
-        <Link href="/preparacion" className="text-clay-dark underline underline-offset-4">
+        <Link href="/preparacion" className="text-brand-700 underline underline-offset-4">
           Comenzar mi análisis como invitado
         </Link>
       </PageShell>
@@ -67,7 +67,7 @@ export default function CuentaPage() {
   if (loading) {
     return (
       <PageShell>
-        <p className="py-12 text-center text-stone">Cargando…</p>
+        <p className="py-12 text-center text-ink-muted">Cargando…</p>
       </PageShell>
     );
   }
@@ -75,14 +75,14 @@ export default function CuentaPage() {
   if (user) {
     return (
       <PageShell>
-        <h1 className="mb-1 font-serif text-2xl font-semibold text-espresso">Mi cuenta</h1>
-        <p className="mb-6 text-sm text-stone">{user.email}</p>
+        <h1 className="mb-1 font-serif text-2xl font-semibold text-ink">Mi cuenta</h1>
+        <p className="mb-6 text-sm text-ink-muted">{user.email}</p>
 
-        <h2 className="mb-3 font-serif text-lg font-medium text-espresso">
+        <h2 className="mb-3 font-serif text-lg font-medium text-ink">
           Historial de análisis
         </h2>
         {analyses.length === 0 ? (
-          <p className="mb-6 rounded-2xl border border-line bg-white/60 p-4 text-sm text-stone">
+          <p className="mb-6 rounded-2xl border border-line bg-white/60 p-4 text-sm text-ink-muted">
             Todavía no has guardado ningún análisis.
           </p>
         ) : (
@@ -93,10 +93,10 @@ export default function CuentaPage() {
                 className="flex items-center justify-between rounded-2xl border border-line bg-white/60 p-4"
               >
                 <div>
-                  <p className="font-medium text-espresso">
+                  <p className="font-medium text-ink">
                     {SEASONS[a.season as SeasonId]?.name ?? a.season}
                   </p>
-                  <p className="text-xs text-stone">
+                  <p className="text-xs text-ink-muted">
                     {new Date(a.created_at).toLocaleDateString("es-CO")} · confianza{" "}
                     {Math.round((a.confidence ?? 0) * 100)}%
                   </p>
@@ -140,10 +140,10 @@ export default function CuentaPage() {
 
   return (
     <PageShell>
-      <h1 className="mb-2 font-serif text-2xl font-semibold text-espresso">
+      <h1 className="mb-2 font-serif text-2xl font-semibold text-ink">
         {mode === "signup" ? "Crear cuenta" : mode === "reset" ? "Recuperar contraseña" : "Iniciar sesión"}
       </h1>
-      <p className="mb-6 text-sm text-stone">
+      <p className="mb-6 text-sm text-ink-muted">
         Crear una cuenta es opcional: sirve para guardar tu historial de análisis.
       </p>
 
@@ -167,7 +167,7 @@ export default function CuentaPage() {
       >
         {mode === "signup" && (
           <div>
-            <label htmlFor="name" className="mb-1 block text-sm text-espresso-soft">
+            <label htmlFor="name" className="mb-1 block text-sm text-ink-soft">
               Nombre (opcional)
             </label>
             <input
@@ -176,12 +176,12 @@ export default function CuentaPage() {
               autoComplete="name"
               value={name}
               onChange={(e) => setName(e.target.value)}
-              className="min-h-12 w-full rounded-xl border border-border-interactive bg-ivory px-3 text-base outline-none focus:border-clay"
+              className="min-h-12 w-full rounded-xl border border-border-interactive bg-blush px-3 text-base outline-none focus:border-brand-600"
             />
           </div>
         )}
         <div>
-          <label htmlFor="email" className="mb-1 block text-sm text-espresso-soft">
+          <label htmlFor="email" className="mb-1 block text-sm text-ink-soft">
             Correo electrónico
           </label>
           <input
@@ -191,12 +191,12 @@ export default function CuentaPage() {
             autoComplete="email"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
-            className="min-h-12 w-full rounded-xl border border-border-interactive bg-ivory px-3 text-base outline-none focus:border-clay"
+            className="min-h-12 w-full rounded-xl border border-border-interactive bg-blush px-3 text-base outline-none focus:border-brand-600"
           />
         </div>
         {mode !== "reset" && (
           <div>
-            <label htmlFor="password" className="mb-1 block text-sm text-espresso-soft">
+            <label htmlFor="password" className="mb-1 block text-sm text-ink-soft">
               Contraseña
             </label>
             <input
@@ -207,7 +207,7 @@ export default function CuentaPage() {
               autoComplete={mode === "signup" ? "new-password" : "current-password"}
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-              className="min-h-12 w-full rounded-xl border border-border-interactive bg-ivory px-3 text-base outline-none focus:border-clay"
+              className="min-h-12 w-full rounded-xl border border-border-interactive bg-blush px-3 text-base outline-none focus:border-brand-600"
             />
           </div>
         )}
@@ -218,28 +218,28 @@ export default function CuentaPage() {
       </form>
 
       {feedback && (
-        <p className="mb-4 text-sm text-espresso-soft" role="status">
+        <p className="mb-4 text-sm text-ink-soft" role="status">
           {feedback}
         </p>
       )}
 
       <div className="flex flex-col gap-2 text-sm">
         {mode !== "login" && (
-          <button type="button" onClick={() => setMode("login")} className="text-clay-dark underline underline-offset-4">
+          <button type="button" onClick={() => setMode("login")} className="text-brand-700 underline underline-offset-4">
             Ya tengo cuenta
           </button>
         )}
         {mode !== "signup" && (
-          <button type="button" onClick={() => setMode("signup")} className="text-clay-dark underline underline-offset-4">
+          <button type="button" onClick={() => setMode("signup")} className="text-brand-700 underline underline-offset-4">
             Crear una cuenta nueva
           </button>
         )}
         {mode !== "reset" && (
-          <button type="button" onClick={() => setMode("reset")} className="text-clay-dark underline underline-offset-4">
+          <button type="button" onClick={() => setMode("reset")} className="text-brand-700 underline underline-offset-4">
             Olvidé mi contraseña
           </button>
         )}
-        <Link href="/preparacion" className="text-stone underline underline-offset-4">
+        <Link href="/preparacion" className="text-ink-muted underline underline-offset-4">
           Continuar como invitado
         </Link>
       </div>

@@ -84,14 +84,14 @@ export default function AnalizandoPage() {
     return (
       <PageShell>
         <div className="flex flex-col items-center gap-4 py-12 text-center">
-          <span className="flex h-12 w-12 items-center justify-center rounded-full bg-clay-soft text-clay-dark">
+          <span className="flex h-12 w-12 items-center justify-center rounded-full bg-brand-100 text-brand-700">
             <AlertTriangle size={22} strokeWidth={1.75} aria-hidden="true" />
           </span>
-          <h1 className="font-serif text-2xl font-semibold text-espresso">
+          <h1 className="font-serif text-2xl font-semibold text-ink">
             No pudimos completar el análisis
           </h1>
-          <p className="max-w-sm text-pretty text-stone">{error}</p>
-          <p className="text-sm text-stone">
+          <p className="max-w-sm text-pretty text-ink-muted">{error}</p>
+          <p className="text-sm text-ink-muted">
             Tus respuestas del cuestionario se conservan.
           </p>
           <Button
@@ -115,10 +115,10 @@ export default function AnalizandoPage() {
         <Loader2
           size={40}
           strokeWidth={1.5}
-          className="animate-spin text-clay"
+          className="animate-spin text-brand-600"
           aria-hidden="true"
         />
-        <h1 className="font-serif text-2xl font-semibold text-espresso">
+        <h1 className="font-serif text-2xl font-semibold text-ink">
           Analizando tu colorimetría
         </h1>
         <ol className="flex w-full max-w-sm flex-col gap-3">
@@ -130,16 +130,16 @@ export default function AnalizandoPage() {
                 key={phase.id}
                 className={`flex items-center gap-3 rounded-2xl border p-3 text-sm transition-colors ${
                   active
-                    ? "border-clay bg-clay-soft text-espresso"
+                    ? "border-brand-600 bg-brand-100 text-ink"
                     : done
-                      ? "border-line bg-white/60 text-espresso-soft"
-                      : "border-line bg-white/30 text-stone"
+                      ? "border-line bg-white/60 text-ink-soft"
+                      : "border-line bg-white/30 text-ink-muted"
                 }`}
               >
                 {done ? (
                   <Check size={16} className="shrink-0 text-emerald-600" aria-hidden="true" />
                 ) : active ? (
-                  <Loader2 size={16} className="shrink-0 animate-spin text-clay-dark" aria-hidden="true" />
+                  <Loader2 size={16} className="shrink-0 animate-spin text-brand-700" aria-hidden="true" />
                 ) : (
                   <span className="h-4 w-4 shrink-0 rounded-full border border-line" aria-hidden="true" />
                 )}

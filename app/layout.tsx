@@ -1,30 +1,40 @@
 import type { Metadata, Viewport } from "next";
-import { Fraunces, Inter } from "next/font/google";
+import { Cormorant_Garamond, Montserrat, Sacramento } from "next/font/google";
 import Header from "@/components/layout/Header";
 import Footer from "@/components/layout/Footer";
 import { PwaSetup } from "@/components/layout/PwaSetup";
+import { ScrollReveal } from "@/components/layout/ScrollReveal";
 import "./globals.css";
 
-const fraunces = Fraunces({
-  variable: "--font-fraunces",
+// Mismas familias tipográficas que Alma e Imagen · The Academy.
+const cormorant = Cormorant_Garamond({
+  variable: "--font-cormorant",
   subsets: ["latin"],
-  weight: ["400", "500", "600"],
+  weight: ["300", "400", "500", "600", "700"],
+  style: ["normal", "italic"],
   display: "swap",
 });
 
-const inter = Inter({
-  variable: "--font-inter",
+const montserrat = Montserrat({
+  variable: "--font-montserrat",
   subsets: ["latin"],
+  display: "swap",
+});
+
+const sacramento = Sacramento({
+  variable: "--font-sacramento",
+  subsets: ["latin"],
+  weight: "400",
   display: "swap",
 });
 
 export const metadata: Metadata = {
-  title: "ColorIA — Descubre los colores que mejor armonizan contigo",
+  title: "Colorimetría · Alma e Imagen",
   description:
-    "Análisis preliminar de colorimetría personal a partir de una selfie y un breve cuestionario. Resultado orientativo, procesado en tu propio navegador.",
+    "Descubre los colores que armonizan contigo. Análisis de colorimetría personal de Alma e Imagen · The Academy, procesado en tu propio dispositivo.",
   appleWebApp: {
     capable: true,
-    title: "ColorIA",
+    title: "Colorimetría",
     statusBarStyle: "default",
   },
   icons: {
@@ -35,7 +45,7 @@ export const metadata: Metadata = {
 export const viewport: Viewport = {
   width: "device-width",
   initialScale: 1,
-  themeColor: "#C17F68",
+  themeColor: "#D6207E",
 };
 
 export default function RootLayout({
@@ -46,13 +56,14 @@ export default function RootLayout({
   return (
     <html
       lang="es"
-      className={`${fraunces.variable} ${inter.variable} h-full antialiased`}
+      className={`${cormorant.variable} ${montserrat.variable} ${sacramento.variable} h-full antialiased`}
     >
-      <body className="flex min-h-full flex-col bg-ivory text-espresso">
+      <body className="flex min-h-full flex-col bg-blush text-ink">
         <Header />
         {children}
         <Footer />
         <PwaSetup />
+        <ScrollReveal />
       </body>
     </html>
   );

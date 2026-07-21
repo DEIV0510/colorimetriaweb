@@ -64,57 +64,103 @@ export default function ResultadoPage() {
 
   return (
     <PageShell>
-      <section className="mb-8 text-center">
-        <p className="mb-1 text-sm uppercase tracking-widest text-stone">Resultado probable</p>
-        <h1 className="mb-3 font-serif text-3xl font-semibold text-espresso sm:text-4xl">
-          {season.name}
-        </h1>
-        <p className="mx-auto mb-4 max-w-md text-pretty text-stone">{season.description}</p>
-        <div className="inline-flex items-center gap-2 rounded-full bg-clay-soft px-4 py-2 text-sm font-medium text-clay-dark">
-          Confianza estimada: {confidencePct}%
+      {/* Portada del resultado, con la paleta asomando de fondo */}
+      <section className="relative -mx-5 mb-10 overflow-hidden px-5 pb-10 pt-12 text-center">
+        <div
+          aria-hidden="true"
+          className="pointer-events-none absolute inset-x-0 top-0 flex h-32 opacity-30 blur-2xl"
+        >
+          {season.palette.slice(0, 8).map((c) => (
+            <span key={c} className="flex-1" style={{ backgroundColor: c }} />
+          ))}
         </div>
-        <p className="mt-3 text-sm text-stone">
-          Segunda estación más cercana:{" "}
-          <strong className="text-espresso-soft">{secondary.name}</strong>
-        </p>
+
+        <div className="relative">
+          <span className="label-brand">Tu resultado probable</span>
+          <h1 className="mx-auto mb-4 mt-3 max-w-md text-balance font-serif text-[2.75rem] font-light leading-[1.05] text-ink sm:text-5xl">
+            {season.name}
+          </h1>
+          <p className="mx-auto mb-5 max-w-md text-pretty leading-relaxed text-ink-soft">
+            {season.description}
+          </p>
+          <div className="inline-flex items-center gap-2 rounded-full bg-brand-gradient px-5 py-2.5 text-sm font-medium text-white shadow-glow">
+            Confianza estimada · {confidencePct}%
+          </div>
+          <p className="mt-4 text-sm text-ink-muted">
+            Segunda estación más cercana:{" "}
+            <strong className="font-medium text-brand-700">{secondary.name}</strong>
+          </p>
+        </div>
       </section>
 
-      <section className="mb-8 grid grid-cols-2 gap-3">
+      <section className="reveal mb-10 grid grid-cols-2 gap-3">
         {features.map((f) => (
-          <div key={f.label} className="rounded-2xl border border-line bg-white/60 p-4">
-            <p className="mb-1 text-xs uppercase tracking-wide text-stone">{f.label}</p>
-            <p className="font-serif text-lg text-espresso">{f.value}</p>
+          <div
+            key={f.label}
+            className="relative overflow-hidden rounded-[1.5rem] border border-line bg-white p-4 shadow-card"
+          >
+            <span
+              aria-hidden="true"
+              className="absolute inset-x-0 top-0 h-0.5 bg-rose-gradient"
+            />
+            <p className="label-brand text-[9px]">{f.label}</p>
+            <p className="mt-1.5 font-serif text-2xl font-light text-ink">{f.value}</p>
           </div>
         ))}
       </section>
 
-      <section className="mb-8">
-        <h2 className="mb-3 font-serif text-xl font-medium text-espresso">Tu paleta principal</h2>
+      <section className="reveal mb-10">
+        <span className="label-brand">Para lucir cerca del rostro</span>
+        <h2 className="mb-4 mt-2 font-serif text-2xl font-light text-ink">
+          Tu paleta principal
+        </h2>
         <ColorSwatchGrid colors={season.palette} columns={4} />
       </section>
 
-      <section className="mb-8">
-        <h2 className="mb-3 font-serif text-xl font-medium text-espresso">Neutros recomendados</h2>
+      <section className="reveal mb-10">
+        <span className="label-brand">Base de tu clóset</span>
+        <h2 className="mb-4 mt-2 font-serif text-2xl font-light text-ink">
+          Neutros recomendados
+        </h2>
         <ColorSwatchGrid colors={season.neutrals} columns={6} />
       </section>
 
-      <section className="mb-8">
-        <h2 className="mb-2 font-serif text-xl font-medium text-espresso">Metales sugeridos</h2>
-        <p className="text-espresso-soft">{season.metals.join(" · ")}</p>
+      <section className="reveal mb-10 rounded-[1.75rem] border border-brand-200 bg-brand-100/50 p-5">
+        <span className="label-brand">Joyería</span>
+        <h2 className="mb-2 mt-2 font-serif text-2xl font-light text-ink">
+          Metales sugeridos
+        </h2>
+        <p className="font-serif text-xl italic text-brand-700">
+          {season.metals.join(" · ")}
+        </p>
       </section>
 
-      <section className="mb-8">
-        <h2 className="mb-3 font-serif text-xl font-medium text-espresso">
-          Colores menos favorables cerca del rostro
+      <section className="reveal mb-10">
+        <span className="label-brand">Con precaución</span>
+        <h2 className="mb-4 mt-2 font-serif text-2xl font-light text-ink">
+          Menos favorables cerca del rostro
         </h2>
         <ColorSwatchGrid colors={season.avoid} columns={4} />
       </section>
 
-      <section className="mb-8">
-        <h2 className="mb-3 font-serif text-xl font-medium text-espresso">Recomendaciones</h2>
-        <ul className="flex flex-col gap-2">
-          {season.recommendations.map((rec) => (
-            <li key={rec} className="rounded-2xl border border-line bg-white/60 p-3 text-sm text-espresso-soft">
+      <section className="reveal mb-10">
+        <span className="label-brand">Cómo llevarlo</span>
+        <h2 className="mb-4 mt-2 font-serif text-2xl font-light text-ink">
+          Recomendaciones
+        </h2>
+        <ul className="flex flex-col gap-3">
+          {season.recommendations.map((rec, i) => (
+            <li
+              key={rec}
+              className="relative overflow-hidden rounded-[1.5rem] border border-line bg-white p-4 pl-5 text-sm leading-relaxed text-ink-soft shadow-card"
+            >
+              <span
+                aria-hidden="true"
+                className="absolute inset-y-0 left-0 w-1 bg-brand-gradient"
+              />
+              <span className="mb-1 block font-serif text-lg text-brand-700">
+                {String(i + 1).padStart(2, "0")}
+              </span>
               {rec}
             </li>
           ))}
@@ -128,17 +174,17 @@ export default function ResultadoPage() {
           className="flex w-full items-center justify-between rounded-2xl border border-line bg-white/60 p-4 text-left"
           aria-expanded={showDetails}
         >
-          <span className="font-medium text-espresso">Ver detalles del análisis</span>
+          <span className="font-medium text-ink">Ver detalles del análisis</span>
           <ChevronDown
             size={20}
-            className={`text-stone transition-transform ${showDetails ? "rotate-180" : ""}`}
+            className={`text-ink-muted transition-transform ${showDetails ? "rotate-180" : ""}`}
             aria-hidden="true"
           />
         </button>
         {showDetails && (
-          <div className="mt-3 flex flex-col gap-3 rounded-2xl border border-line bg-ivory-soft p-4 text-sm text-espresso-soft">
+          <div className="mt-3 flex flex-col gap-3 rounded-2xl border border-line bg-blush-100 p-4 text-sm text-ink-soft">
             <div>
-              <p className="mb-1 font-medium text-espresso">¿Por qué este resultado?</p>
+              <p className="mb-1 font-medium text-ink">¿Por qué este resultado?</p>
               <ul className="list-inside list-disc">
                 {classification.influencingFactors.map((factor) => (
                   <li key={factor}>{factor}</li>
@@ -146,7 +192,7 @@ export default function ResultadoPage() {
               </ul>
             </div>
             <div>
-              <p className="mb-1 font-medium text-espresso">Otras estaciones cercanas</p>
+              <p className="mb-1 font-medium text-ink">Otras estaciones cercanas</p>
               <p>
                 {SEASONS[classification.secondary.seasonId].name} ·{" "}
                 {SEASONS[classification.tertiary.seasonId].name}
@@ -154,7 +200,7 @@ export default function ResultadoPage() {
             </div>
             {photoQuality && (
               <div>
-                <p className="mb-1 font-medium text-espresso">Calidad de la fotografía</p>
+                <p className="mb-1 font-medium text-ink">Calidad de la fotografía</p>
                 <p className="capitalize">{photoQuality.overallQuality}</p>
               </div>
             )}
@@ -164,9 +210,9 @@ export default function ResultadoPage() {
 
       {(classification.warnings.length > 0 ||
         (photoQuality?.warnings.length ?? 0) > 0) && (
-        <section className="mb-8 flex items-start gap-3 rounded-2xl border border-line bg-ivory-soft p-4">
-          <AlertTriangle size={20} className="mt-0.5 shrink-0 text-clay-dark" aria-hidden="true" />
-          <ul className="flex flex-col gap-1 text-sm text-espresso-soft">
+        <section className="mb-8 flex items-start gap-3 rounded-2xl border border-line bg-blush-100 p-4">
+          <AlertTriangle size={20} className="mt-0.5 shrink-0 text-brand-700" aria-hidden="true" />
+          <ul className="flex flex-col gap-1 text-sm text-ink-soft">
             {[...classification.warnings, ...(photoQuality?.warnings ?? [])].map((w) => (
               <li key={w}>{w}</li>
             ))}
@@ -182,9 +228,29 @@ export default function ResultadoPage() {
         photoDataUrl={photoDataUrl}
       />
 
-      <section className="mb-8 rounded-2xl border border-line bg-white/60 p-4">
-        <h2 className="mb-3 font-serif text-lg font-medium text-espresso">Descargar informe</h2>
-        <label htmlFor="report-name" className="mb-1 block text-sm text-espresso-soft">
+      {/* Puente hacia la academia: esta herramienta es la puerta de entrada */}
+      <section className="reveal mb-8 overflow-hidden rounded-[1.75rem] bg-brand-gradient p-6 text-center shadow-glow">
+        <span className="font-script text-3xl text-white/95">Alma e Imagen</span>
+        <p className="mx-auto mt-3 max-w-sm text-pretty text-sm leading-relaxed text-white/90">
+          Tu paleta es solo el comienzo. En The Academy, Leidy Sepúlveda acompaña el
+          proceso completo: sanación emocional, amor propio e imagen personal.
+        </p>
+        <a
+          href="https://almaeimagen.com"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="mt-5 inline-flex min-h-12 items-center justify-center rounded-full bg-white px-7 font-sans text-sm font-medium text-brand-700 transition-transform duration-300 hover:-translate-y-0.5 motion-reduce:hover:translate-y-0"
+        >
+          Conocer la academia
+        </a>
+      </section>
+
+      <section className="reveal mb-8 rounded-[1.75rem] border border-line bg-white p-5 shadow-card">
+        <span className="label-brand">Para llevar</span>
+        <h2 className="mb-4 mt-2 font-serif text-2xl font-light text-ink">
+          Descargar informe
+        </h2>
+        <label htmlFor="report-name" className="mb-1 block text-sm text-ink-soft">
           Tu nombre (opcional)
         </label>
         <input
@@ -193,14 +259,14 @@ export default function ResultadoPage() {
           value={userName}
           onChange={(e) => setUserName(e.target.value)}
           placeholder="Ej. Ana"
-          className="mb-3 min-h-12 w-full rounded-xl border border-border-interactive bg-ivory px-3 text-base text-espresso outline-none focus:border-clay"
+          className="mb-3 min-h-12 w-full rounded-xl border border-border-interactive bg-blush px-3 text-base text-ink outline-none focus:border-brand-600"
         />
-        <label className="mb-4 flex cursor-pointer items-start gap-3 text-sm text-espresso-soft">
+        <label className="mb-4 flex cursor-pointer items-start gap-3 text-sm text-ink-soft">
           <input
             type="checkbox"
             checked={includeSelfie}
             onChange={(e) => setIncludeSelfie(e.target.checked)}
-            className="mt-0.5 h-5 w-5 shrink-0 accent-clay"
+            className="mt-0.5 h-5 w-5 shrink-0 accent-brand-600"
           />
           Incluir mi selfie en el informe
         </label>
@@ -218,7 +284,7 @@ export default function ResultadoPage() {
         </Button>
       </section>
 
-      <p className="mb-6 rounded-2xl bg-ivory-soft p-4 text-sm leading-relaxed text-espresso-soft">
+      <p className="mb-6 rounded-2xl bg-blush-100 p-4 text-sm leading-relaxed text-ink-soft">
         Este resultado se genera a partir de una fotografía y un cuestionario. La luz, la cámara y
         otros factores pueden afectar la estimación.
       </p>

@@ -28,10 +28,10 @@ export function PwaSetup() {
   if (!installEvent || dismissed) return null;
 
   return (
-    <div className="fixed inset-x-4 bottom-4 z-50 mx-auto flex max-w-md items-center gap-3 rounded-2xl border border-line bg-ivory p-4 shadow-lg">
-      <Download size={20} strokeWidth={1.75} className="shrink-0 text-clay-dark" aria-hidden="true" />
-      <p className="flex-1 text-sm text-espresso-soft">
-        Instala ColorIA en tu pantalla de inicio para abrirla más rápido.
+    <div className="fixed inset-x-4 bottom-4 z-50 mx-auto flex max-w-md items-center gap-3 rounded-[1.5rem] border border-brand-200 bg-white p-4 shadow-glow">
+      <Download size={20} strokeWidth={1.75} className="shrink-0 text-brand-700" aria-hidden="true" />
+      <p className="flex-1 text-sm text-ink-soft">
+        Instala Colorimetría en tu pantalla de inicio para abrirla más rápido.
       </p>
       <button
         type="button"
@@ -39,7 +39,7 @@ export function PwaSetup() {
           await installEvent.prompt();
           setInstallEvent(null);
         }}
-        className="min-h-11 rounded-xl bg-espresso px-4 text-sm font-medium text-ivory"
+        className="min-h-11 rounded-full bg-brand-gradient px-5 text-sm font-medium text-white"
       >
         Instalar
       </button>
@@ -47,7 +47,7 @@ export function PwaSetup() {
         type="button"
         onClick={() => setDismissed(true)}
         aria-label="Cerrar aviso de instalación"
-        className="flex h-11 w-11 items-center justify-center text-stone"
+        className="flex h-11 w-11 items-center justify-center text-ink-muted"
       >
         <X size={18} strokeWidth={1.75} aria-hidden="true" />
       </button>

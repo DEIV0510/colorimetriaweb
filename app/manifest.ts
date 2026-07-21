@@ -2,15 +2,15 @@ import type { MetadataRoute } from "next";
 
 export default function manifest(): MetadataRoute.Manifest {
   return {
-    name: "ColorIA — Colorimetría personal",
-    short_name: "ColorIA",
+    name: "Colorimetría · Alma e Imagen",
+    short_name: "Colorimetría",
     description:
-      "Análisis preliminar de colorimetría personal a partir de una selfie y un breve cuestionario.",
+      "Descubre los colores que armonizan contigo. Herramienta de colorimetría de Alma e Imagen · The Academy.",
     start_url: "/",
     display: "standalone",
     orientation: "portrait",
-    background_color: "#FBF7F2",
-    theme_color: "#C17F68",
+    background_color: "#FFF6FA",
+    theme_color: "#D6207E",
     lang: "es",
     icons: [
       {

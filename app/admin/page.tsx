@@ -23,7 +23,7 @@ export default function AdminPage() {
   if (loading) {
     return (
       <PageShell>
-        <p className="py-12 text-center text-stone" role="status">
+        <p className="py-12 text-center text-ink-muted" role="status">
           Verificando acceso…
         </p>
       </PageShell>
@@ -38,19 +38,19 @@ export default function AdminPage() {
     return (
       <PageShell>
         <div className="flex flex-col items-center gap-4 py-12 text-center">
-          <span className="flex h-12 w-12 items-center justify-center rounded-full bg-clay-soft text-clay-dark">
+          <span className="flex h-12 w-12 items-center justify-center rounded-full bg-brand-100 text-brand-700">
             <ShieldAlert size={22} strokeWidth={1.75} aria-hidden="true" />
           </span>
-          <h1 className="font-serif text-2xl font-semibold text-espresso">
+          <h1 className="font-serif text-2xl font-semibold text-ink">
             Acceso restringido
           </h1>
-          <p className="max-w-sm text-pretty text-stone">
+          <p className="max-w-sm text-pretty text-ink-muted">
             {isSupabaseConfigured
               ? "Inicia sesión con una cuenta registrada como administradora."
               : "Esta instalación no tiene Supabase configurado, así que no hay métricas que mostrar."}
           </p>
           {isSupabaseConfigured && (
-            <Link href="/cuenta" className="text-clay-dark underline underline-offset-4">
+            <Link href="/cuenta" className="text-brand-700 underline underline-offset-4">
               Iniciar sesión
             </Link>
           )}

@@ -11,10 +11,10 @@ export const metadata: Metadata = {
 export default function PrivacidadPage() {
   return (
     <PageShell>
-      <h1 className="mb-2 font-serif text-2xl font-semibold text-espresso sm:text-3xl">
+      <h1 className="mb-2 font-serif text-2xl font-semibold text-ink sm:text-3xl">
         Política de privacidad
       </h1>
-      <p className="mb-8 text-sm text-stone">
+      <p className="mb-8 text-sm text-ink-muted">
         Esta política describe el funcionamiento real de la aplicación. No constituye
         asesoría legal ni afirma cumplimiento garantizado con ninguna legislación
         específica.
@@ -90,15 +90,15 @@ export default function PrivacidadPage() {
       <LegalSection title="Cookies y almacenamiento local">
         <p>
           La aplicación usa el almacenamiento de sesión del navegador
-          (<code className="rounded bg-ivory-soft px-1">sessionStorage</code>) para
+          (<code className="rounded bg-blush-100 px-1">sessionStorage</code>) para
           mantener tu progreso mientras completas el flujo. Se borra al cerrar la
           pestaña.
         </p>
         <p>
           Si inicias sesión, además se guarda un token de sesión en
           {" "}
-          <code className="rounded bg-ivory-soft px-1">localStorage</code> (una clave que
-          empieza por <code className="rounded bg-ivory-soft px-1">sb-</code>) para no
+          <code className="rounded bg-blush-100 px-1">localStorage</code> (una clave que
+          empieza por <code className="rounded bg-blush-100 px-1">sb-</code>) para no
           pedirte la contraseña en cada visita. Ese token contiene tu correo y persiste
           hasta que cierras sesión. El botón &ldquo;Eliminar todos mis datos&rdquo; de
           más abajo también cierra la sesión.
@@ -136,7 +136,7 @@ export default function PrivacidadPage() {
       </LegalSection>
 
       <div className="mt-8 rounded-2xl border border-line bg-white/60 p-5">
-        <h2 className="mb-3 font-serif text-lg font-medium text-espresso">
+        <h2 className="mb-3 font-serif text-lg font-medium text-ink">
           Eliminar mis datos ahora
         </h2>
         <DeleteDataButtons />

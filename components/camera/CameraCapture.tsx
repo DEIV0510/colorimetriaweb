@@ -179,7 +179,7 @@ export default function CameraCapture() {
 
   return (
     <div className="flex flex-col items-center gap-5">
-      <div className="relative aspect-[3/4] w-full max-w-sm overflow-hidden rounded-3xl bg-espresso">
+      <div className="relative aspect-[3/4] w-full max-w-sm overflow-hidden rounded-3xl bg-ink">
         {/* El <video> se monta SIEMPRE: si se montara solo con status "ready",
             videoRef.current seria null al asignar srcObject y la camara
             quedaria en negro sin que la deteccion llegara a arrancar. */}
@@ -198,13 +198,13 @@ export default function CameraCapture() {
             <div className="pointer-events-none absolute inset-0 flex items-center justify-center">
               <div
                 className={`h-[68%] w-[62%] rounded-[50%] border-4 transition-colors ${
-                  canCapture ? "border-emerald-400" : "border-ivory/70"
+                  canCapture ? "border-emerald-400" : "border-blush/70"
                 }`}
               />
             </div>
             <div className="pointer-events-none absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/70 to-transparent p-4 pt-10 text-center">
               <p
-                className="text-sm font-medium text-ivory"
+                className="text-sm font-medium text-blush"
                 role="status"
                 aria-live="polite"
               >
@@ -212,7 +212,7 @@ export default function CameraCapture() {
               </p>
             </div>
             {showDebug && (
-              <div className="pointer-events-none absolute left-2 top-2 rounded bg-black/50 px-2 py-1 text-[10px] text-ivory">
+              <div className="pointer-events-none absolute left-2 top-2 rounded bg-black/50 px-2 py-1 text-[10px] text-blush">
                 {debugInfo}
               </div>
             )}
@@ -220,24 +220,24 @@ export default function CameraCapture() {
         )}
 
         {isBusy && (
-          <div className="absolute inset-0 flex items-center justify-center bg-espresso">
-            <p className="text-sm text-ivory/80" role="status" aria-live="polite">
+          <div className="absolute inset-0 flex items-center justify-center bg-ink">
+            <p className="text-sm text-blush/80" role="status" aria-live="polite">
               Activando cámara…
             </p>
           </div>
         )}
 
         {hasError && (
-          <div className="absolute inset-0 flex flex-col items-center justify-center gap-3 bg-espresso p-6 text-center">
-            <AlertTriangle size={28} strokeWidth={1.75} className="text-clay" aria-hidden="true" />
-            <p className="text-sm text-ivory/90" role="alert">
+          <div className="absolute inset-0 flex flex-col items-center justify-center gap-3 bg-ink p-6 text-center">
+            <AlertTriangle size={28} strokeWidth={1.75} className="text-brand-600" aria-hidden="true" />
+            <p className="text-sm text-blush/90" role="alert">
               {STATUS_MESSAGES[status as Exclude<CameraStatus, "ready" | "checking" | "requesting">]}
             </p>
           </div>
         )}
       </div>
 
-      <p className="text-center text-xs text-stone">Tu fotografía no se publicará.</p>
+      <p className="text-center text-xs text-ink-muted">Tu fotografía no se publicará.</p>
 
       <div className="flex w-full max-w-sm flex-col gap-3">
         <Button onClick={handleCapture} disabled={status !== "ready" || !canCapture}>

@@ -87,14 +87,14 @@ export default function CuestionarioPage() {
   return (
     <PageShell>
       <div className="mb-6">
-        <div className="mb-2 flex items-center justify-between text-sm text-stone">
+        <div className="mb-2 flex items-center justify-between text-sm text-ink-muted">
           <span>
             Pregunta {step + 1} de {QUESTIONNAIRE_STEPS.length}
           </span>
           <span>{Math.round(progress)}%</span>
         </div>
         <div
-          className="h-2 w-full overflow-hidden rounded-full bg-ivory-soft"
+          className="h-2 w-full overflow-hidden rounded-full bg-blush-100"
           role="progressbar"
           aria-label="Progreso del cuestionario"
           aria-valuenow={Math.round(progress)}
@@ -102,7 +102,7 @@ export default function CuestionarioPage() {
           aria-valuemax={100}
         >
           <div
-            className="h-full rounded-full bg-clay transition-all duration-300"
+            className="h-full rounded-full bg-brand-600 transition-all duration-300"
             style={{ width: `${progress}%` }}
           />
         </div>
@@ -111,11 +111,11 @@ export default function CuestionarioPage() {
       <h1
         ref={headingRef}
         tabIndex={-1}
-        className="mb-2 font-serif text-xl font-semibold text-espresso outline-none sm:text-2xl"
+        className="mb-2 font-serif text-xl font-semibold text-ink outline-none sm:text-2xl"
       >
         {config.question}
       </h1>
-      {config.helper && <p className="mb-4 text-sm text-stone">{config.helper}</p>}
+      {config.helper && <p className="mb-4 text-sm text-ink-muted">{config.helper}</p>}
 
       <div className="mb-8 mt-4 flex flex-col gap-3">
         {config.options.map((option) => {
@@ -127,8 +127,8 @@ export default function CuestionarioPage() {
               onClick={() => setAnswers(setAnswerForStep(answers, step, option.value))}
               className={`flex min-h-14 items-center gap-3 rounded-2xl border px-4 py-3 text-left transition-colors ${
                 selected
-                  ? "border-clay bg-clay-soft text-espresso"
-                  : "border-line bg-white/60 text-espresso-soft hover:border-clay"
+                  ? "border-brand-600 bg-brand-100 text-ink"
+                  : "border-line bg-white/60 text-ink-soft hover:border-brand-600"
               }`}
               aria-pressed={selected}
             >

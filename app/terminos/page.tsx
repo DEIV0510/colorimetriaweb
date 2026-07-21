@@ -10,10 +10,10 @@ export const metadata: Metadata = {
 export default function TerminosPage() {
   return (
     <PageShell>
-      <h1 className="mb-2 font-serif text-2xl font-semibold text-espresso sm:text-3xl">
+      <h1 className="mb-2 font-serif text-2xl font-semibold text-ink sm:text-3xl">
         Términos y condiciones
       </h1>
-      <p className="mb-8 text-sm text-stone">
+      <p className="mb-8 text-sm text-ink-muted">
         Al usar ColorIA aceptas las condiciones descritas a continuación.
       </p>
 

@@ -49,10 +49,10 @@ export function SaveToAccount({
 
   if (!user) {
     return (
-      <section className="mb-8 rounded-2xl border border-line bg-white/60 p-4 text-sm text-espresso-soft">
+      <section className="mb-8 rounded-2xl border border-line bg-white/60 p-4 text-sm text-ink-soft">
         <p>
           Este análisis vive solo en este navegador y desaparecerá al cerrar la pestaña.{" "}
-          <Link href="/cuenta" className="text-clay-dark underline underline-offset-4">
+          <Link href="/cuenta" className="text-brand-700 underline underline-offset-4">
             Crea una cuenta
           </Link>{" "}
           si quieres conservarlo en tu historial.
@@ -65,9 +65,9 @@ export function SaveToAccount({
     return (
       <section className="mb-8 flex items-center gap-3 rounded-2xl border border-line bg-white/60 p-4">
         <Check size={20} className="shrink-0 text-emerald-600" aria-hidden="true" />
-        <p className="text-sm text-espresso-soft" role="status">
+        <p className="text-sm text-ink-soft" role="status">
           Guardado en tu cuenta.{" "}
-          <Link href="/cuenta" className="text-clay-dark underline underline-offset-4">
+          <Link href="/cuenta" className="text-brand-700 underline underline-offset-4">
             Ver mi historial
           </Link>
         </p>
@@ -77,21 +77,21 @@ export function SaveToAccount({
 
   return (
     <section className="mb-8 rounded-2xl border border-line bg-white/60 p-4">
-      <h2 className="mb-1 font-serif text-lg font-medium text-espresso">
+      <h2 className="mb-1 font-serif text-lg font-medium text-ink">
         Guardar en mi cuenta
       </h2>
-      <p className="mb-3 text-sm text-stone">
+      <p className="mb-3 text-sm text-ink-muted">
         Se guardará el resultado y tus respuestas. Nada se envía a un servidor si no
         pulsas este botón.
       </p>
 
       {/* Consentimiento separado para la imagen, tal y como declara la política. */}
-      <label className="mb-4 flex cursor-pointer items-start gap-3 text-sm text-espresso-soft">
+      <label className="mb-4 flex cursor-pointer items-start gap-3 text-sm text-ink-soft">
         <input
           type="checkbox"
           checked={savePhoto}
           onChange={(e) => setSavePhoto(e.target.checked)}
-          className="mt-0.5 h-5 w-5 shrink-0 accent-clay"
+          className="mt-0.5 h-5 w-5 shrink-0 accent-brand-600"
         />
         Guardar también mi selfie (se sube a un almacenamiento privado y solo tú puedes
         verla)
@@ -128,7 +128,7 @@ export function SaveToAccount({
       </Button>
 
       {state === "error" && message && (
-        <p className="mt-3 text-sm text-clay-dark" role="alert">
+        <p className="mt-3 text-sm text-brand-700" role="alert">
           {message}
         </p>
       )}

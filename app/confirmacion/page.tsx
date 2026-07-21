@@ -78,11 +78,11 @@ export default function ConfirmacionPage() {
 
   return (
     <PageShell>
-      <h1 className="mb-4 font-serif text-2xl font-semibold text-espresso sm:text-3xl">
+      <h1 className="mb-4 font-serif text-2xl font-semibold text-ink sm:text-3xl">
         Confirma tu selfie
       </h1>
 
-      <div className="mx-auto mb-6 aspect-[3/4] w-full max-w-sm overflow-hidden rounded-3xl bg-espresso">
+      <div className="mx-auto mb-6 aspect-[3/4] w-full max-w-sm overflow-hidden rounded-3xl bg-ink">
         <Image
           src={photoDataUrl}
           alt="Selfie capturada"
@@ -94,9 +94,9 @@ export default function ConfirmacionPage() {
       </div>
 
       <div className="mb-6 flex flex-col gap-2">
-        {checking && <p className="text-sm text-stone">Verificando calidad de la imagen…</p>}
+        {checking && <p className="text-sm text-ink-muted">Verificando calidad de la imagen…</p>}
         {checkFailed && (
-          <p className="flex items-center gap-2 text-sm text-clay-dark">
+          <p className="flex items-center gap-2 text-sm text-brand-700">
             <AlertTriangle size={16} aria-hidden="true" /> No pudimos verificar la imagen. Intenta repetir la selfie.
           </p>
         )}
@@ -107,16 +107,16 @@ export default function ConfirmacionPage() {
               {item.ok ? (
                 <Check size={16} className="text-emerald-600" aria-hidden="true" />
               ) : (
-                <X size={16} className="text-clay-dark" aria-hidden="true" />
+                <X size={16} className="text-brand-700" aria-hidden="true" />
               )}
               {/* El icono es aria-hidden y el color no llega al lector de
                   pantalla: sin este texto, ✓ y ✗ suenan exactamente igual. */}
               <span className="sr-only">{item.ok ? "Correcto:" : "Pendiente:"}</span>
-              <span className={item.ok ? "text-espresso-soft" : "text-clay-dark"}>{item.label}</span>
+              <span className={item.ok ? "text-ink-soft" : "text-brand-700"}>{item.label}</span>
             </div>
           ))}
         {!checking && quality && quality.warnings.length > 0 && (
-          <ul className="mt-2 list-inside list-disc rounded-xl bg-ivory-soft p-3 text-sm text-espresso-soft">
+          <ul className="mt-2 list-inside list-disc rounded-xl bg-blush-100 p-3 text-sm text-ink-soft">
             {quality.warnings.map((w) => (
               <li key={w}>{w}</li>
             ))}

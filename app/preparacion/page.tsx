@@ -35,10 +35,10 @@ export default function PreparacionPage() {
 
   return (
     <PageShell>
-      <h1 className="mb-2 font-serif text-2xl font-semibold text-espresso sm:text-3xl">
+      <h1 className="mb-2 font-serif text-2xl font-semibold text-ink sm:text-3xl">
         Prepárate para tu selfie
       </h1>
-      <p className="mb-6 text-stone">
+      <p className="mb-6 text-ink-muted">
         Sigue estas recomendaciones para obtener el análisis más preciso posible.
       </p>
 
@@ -48,10 +48,10 @@ export default function PreparacionPage() {
             key={text}
             className="flex items-center gap-3 rounded-2xl border border-line bg-white/60 p-3"
           >
-            <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-ivory-soft text-clay-dark">
+            <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-blush-100 text-brand-700">
               <Icon size={18} strokeWidth={1.75} aria-hidden="true" />
             </span>
-            <span className="text-sm text-espresso-soft">{text}</span>
+            <span className="text-sm text-ink-soft">{text}</span>
           </li>
         ))}
       </ul>
