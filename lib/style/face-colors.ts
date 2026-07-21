@@ -13,7 +13,6 @@ export function classifyFaceColors(
   features: DetectedFeatures
 ): FaceColorGuide {
   const index = getSeasonColorIndex(seasonId);
-  const voice = SEASON_STYLE_VOICE[seasonId];
 
   // Luminosidad ideal aproximada según la profundidad de la persona
   const targetL = features.depth === "clara" ? 70 : features.depth === "media" ? 55 : 40;

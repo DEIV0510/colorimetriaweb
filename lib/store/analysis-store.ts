@@ -6,6 +6,8 @@ import type { QuestionnaireAnswers } from "@/types/questionnaire";
 import { EMPTY_ANSWERS } from "@/types/questionnaire";
 import type { SkinColorResult } from "@/types/color";
 import type { ClassificationResult } from "@/types/classification";
+import type { StylePreferences } from "@/types/preferences";
+import { EMPTY_STYLE_PREFERENCES } from "@/types/preferences";
 
 interface AnalysisState {
   photoDataUrl: string | null;
@@ -17,6 +19,13 @@ interface AnalysisState {
   consentGiven: boolean;
   noMakeupConfirmed: boolean;
   pipelineError: string | null;
+  /**
+   * Preferencias OPCIONALES de estilo. Deliberadamente FUERA de
+   * `QuestionnaireAnswers`: la confianza se calcula como respondidas/total
+   * sobre el cuestionario, así que meterlas ahí penalizaría a quien no las
+   * conteste sin que aporten nada a la clasificación.
+   */
+  preferences: StylePreferences;
 
   setPhoto: (dataUrl: string | null) => void;
   setPhotoQuality: (quality: ImageQualityResult | null) => void;
@@ -26,6 +35,7 @@ interface AnalysisState {
   setClassification: (result: ClassificationResult | null) => void;
   setConsent: (consentGiven: boolean, noMakeupConfirmed: boolean) => void;
   setPipelineError: (message: string | null) => void;
+  setPreferences: (preferences: StylePreferences) => void;
   resetPhoto: () => void;
   resetAll: () => void;
 }
@@ -40,6 +50,7 @@ const initialState = {
   consentGiven: false,
   noMakeupConfirmed: false,
   pipelineError: null,
+  preferences: EMPTY_STYLE_PREFERENCES,
 };
 
 export const useAnalysisStore = create<AnalysisState>()(
@@ -55,6 +66,9 @@ export const useAnalysisStore = create<AnalysisState>()(
       setConsent: (consentGiven, noMakeupConfirmed) =>
         set({ consentGiven, noMakeupConfirmed }),
       setPipelineError: (pipelineError) => set({ pipelineError }),
+      setPreferences: (preferences) => set({ preferences }),
+      // No toca `preferences`: repetir la foto no debe borrar las preferencias
+      // de estilo, son ortogonales al análisis.
       resetPhoto: () =>
         set({
           photoDataUrl: null,
@@ -78,6 +92,9 @@ export const useAnalysisStore = create<AnalysisState>()(
         classification: state.classification,
         consentGiven: state.consentGiven,
         noMakeupConfirmed: state.noMakeupConfirmed,
+        // La lista blanca es explícita: sin esta línea las preferencias se
+        // perderían al recargar.
+        preferences: state.preferences,
       }),
     }
   )
