@@ -6,7 +6,8 @@ export default function Footer() {
       <div className="mx-auto flex w-full max-w-2xl flex-col items-center gap-4 px-5 py-10 text-center">
         <span className="font-script text-2xl text-brand-700">Alma e Imagen</span>
         <p className="max-w-sm text-sm leading-relaxed text-ink-muted">
-          El resultado es una estimación orientativa, no un diagnóstico profesional.
+          Herramienta de colorimetría de The Academy. El resultado es una estimación
+          orientativa, no un diagnóstico profesional.
         </p>
         <div className="flex items-center gap-5 text-sm">
           <Link
@@ -23,7 +24,7 @@ export default function Footer() {
           </Link>
         </div>
         <p className="text-xs text-ink-muted">
-          © {new Date().getFullYear()} Alma e Imagen
+          © {new Date().getFullYear()} Alma e Imagen · Leidy Sepúlveda
         </p>
       </div>
     </footer>

@@ -228,6 +228,17 @@ export default function ResultadoPage() {
         photoDataUrl={photoDataUrl}
       />
 
+      {/* Sitúa la herramienta dentro del curso. Todavía SIN enlace: la conexión
+          con la plataforma de la academia está pendiente de decidir. */}
+      <section className="reveal mb-8 overflow-hidden rounded-[1.75rem] bg-brand-gradient p-6 text-center shadow-glow">
+        <span className="font-script text-3xl text-white/95">Alma e Imagen</span>
+        <p className="mx-auto mt-3 max-w-sm text-pretty text-sm leading-relaxed text-white/90">
+          Tu paleta hace parte de <strong className="font-medium">Mi Reflejo</strong>, la
+          ruta de imagen personal de The Academy. Leidy Sepúlveda te acompaña en el
+          proceso completo: sanación emocional, amor propio e imagen.
+        </p>
+      </section>
+
       <section className="reveal mb-8 rounded-[1.75rem] border border-line bg-white p-5 shadow-card">
         <span className="label-brand">Para llevar</span>
         <h2 className="mb-4 mt-2 font-serif text-2xl font-light text-ink">
