@@ -31,7 +31,7 @@ const sacramento = Sacramento({
 export const metadata: Metadata = {
   title: "Colorimetría · Alma e Imagen",
   description:
-    "Descubre los colores que armonizan contigo. Análisis de colorimetría personal de Alma e Imagen · The Academy, procesado en tu propio dispositivo.",
+    "Descubre los colores que armonizan contigo. Análisis de colorimetría personal a partir de una selfie, procesado en tu propio dispositivo.",
   appleWebApp: {
     capable: true,
     title: "Colorimetría",

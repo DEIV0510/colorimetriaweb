@@ -50,7 +50,7 @@ export default function Home() {
         />
 
         <div className="relative">
-          <span className="label-brand">Alma e Imagen · The Academy</span>
+          <span className="label-brand">Colorimetría personal</span>
 
           <h1 className="mx-auto mt-5 max-w-lg text-balance font-serif text-[2.6rem] font-light leading-[1.08] text-ink sm:text-6xl">
             Descubre los colores que{" "}

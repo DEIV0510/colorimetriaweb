@@ -228,23 +228,6 @@ export default function ResultadoPage() {
         photoDataUrl={photoDataUrl}
       />
 
-      {/* Puente hacia la academia: esta herramienta es la puerta de entrada */}
-      <section className="reveal mb-8 overflow-hidden rounded-[1.75rem] bg-brand-gradient p-6 text-center shadow-glow">
-        <span className="font-script text-3xl text-white/95">Alma e Imagen</span>
-        <p className="mx-auto mt-3 max-w-sm text-pretty text-sm leading-relaxed text-white/90">
-          Tu paleta es solo el comienzo. En The Academy, Leidy Sepúlveda acompaña el
-          proceso completo: sanación emocional, amor propio e imagen personal.
-        </p>
-        <a
-          href="https://almaeimagen.com"
-          target="_blank"
-          rel="noopener noreferrer"
-          className="mt-5 inline-flex min-h-12 items-center justify-center rounded-full bg-white px-7 font-sans text-sm font-medium text-brand-700 transition-transform duration-300 hover:-translate-y-0.5 motion-reduce:hover:translate-y-0"
-        >
-          Conocer la academia
-        </a>
-      </section>
-
       <section className="reveal mb-8 rounded-[1.75rem] border border-line bg-white p-5 shadow-card">
         <span className="label-brand">Para llevar</span>
         <h2 className="mb-4 mt-2 font-serif text-2xl font-light text-ink">

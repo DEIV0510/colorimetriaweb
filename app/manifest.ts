@@ -5,7 +5,7 @@ export default function manifest(): MetadataRoute.Manifest {
     name: "Colorimetría · Alma e Imagen",
     short_name: "Colorimetría",
     description:
-      "Descubre los colores que armonizan contigo. Herramienta de colorimetría de Alma e Imagen · The Academy.",
+      "Descubre los colores que armonizan contigo. Análisis de colorimetría personal a partir de una selfie.",
     start_url: "/",
     display: "standalone",
     orientation: "portrait",
