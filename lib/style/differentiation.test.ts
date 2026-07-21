@@ -5,8 +5,19 @@ import { formatMetal } from "./harmony";
 import { EMPTY_STYLE_PREFERENCES } from "@/types/preferences";
 import { COLOR_NAMES, SEASON_SUPPORT_NEUTRALS } from "@/data/color-names";
 import { SEASONS } from "@/data/seasons";
+import { SEASON_STYLE_VOICE } from "@/data/style-recommendations";
 import type { ClassificationResult, SeasonId } from "@/types/classification";
-import type { StyleGuide } from "@/types/style";
+import type { Occasion, StyleGuide } from "@/types/style";
+
+const OCCASIONS: Occasion[] = [
+  "casual",
+  "trabajo",
+  "elegante",
+  "cita",
+  "noche",
+  "clima-calido",
+  "clima-frio",
+];
 
 function makeClassification(seasonId: SeasonId): ClassificationResult {
   const season = SEASONS[seasonId];
@@ -83,6 +94,31 @@ describe("diferenciación entre estaciones", () => {
     }
 
     expect(collisions, `esqueletos idénticos: ${collisions.slice(0, 5).join(" · ")}`).toHaveLength(0);
+  });
+
+  // Dentro de una misma estación, las 7 ocasiones tampoco pueden decir lo mismo:
+  // si no, el usuario ve la misma frase siete veces seguidas.
+  it("no repite la misma frase en las 7 ocasiones de una estación", () => {
+    const flat: string[] = [];
+    for (const season of SEASON_LIST) {
+      const textos = guides.get(season.id)!.outfits.map((o) => o.harmonyExplanation);
+      const distintos = new Set(textos).size;
+      if (distintos < 4) flat.push(`${season.id} (${distintos}/7 distintos)`);
+    }
+    expect(flat, `estaciones con texto repetido: ${flat.join(", ")}`).toHaveLength(0);
+  });
+
+  // Con las 12 estaciones completas, el respaldo genérico de composeOutfitExplanation
+  // no debe ejecutarse nunca: existe solo por si se añade una estación nueva.
+  it("tiene nota escrita a mano para las 7 ocasiones de las 12 estaciones", () => {
+    const faltan: string[] = [];
+    for (const season of SEASON_LIST) {
+      const notes = SEASON_STYLE_VOICE[season.id].occasionNotes;
+      for (const occasion of OCCASIONS) {
+        if (!notes[occasion]) faltan.push(`${season.id}/${occasion}`);
+      }
+    }
+    expect(faltan, `notas sin escribir: ${faltan.join(", ")}`).toHaveLength(0);
   });
 
   it("da a cada estación un 'porqué' distinto", () => {

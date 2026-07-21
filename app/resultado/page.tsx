@@ -4,9 +4,12 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import {
   AlertTriangle,
+  Brush,
   ChevronDown,
   Download,
   Gem,
+  Glasses,
+  Heart,
   Palette,
   RotateCcw,
   Shirt,
@@ -23,7 +26,10 @@ import { ColorSwatchGrid } from "@/components/results/ColorSwatchGrid";
 import { NamedSwatchGrid } from "@/components/results/NamedSwatchGrid";
 import { OutfitCard } from "@/components/results/OutfitCard";
 import { SaveToAccount } from "@/components/results/SaveToAccount";
+import { StylePreferencesPanel } from "@/components/results/StylePreferencesPanel";
+import { FavoriteButton } from "@/components/results/FavoriteButton";
 import { useAnalysisStore } from "@/lib/store/analysis-store";
+import { useFavoritesStore } from "@/lib/store/favorites-store";
 import { useHasHydrated } from "@/lib/store/use-hydrated";
 import { useTabHash } from "@/lib/hooks/use-tab-hash";
 import { LoadingScreen } from "@/components/ui/LoadingScreen";
@@ -46,6 +52,9 @@ const TABS = [
   { id: "outfits", label: "Tus outfits", icon: Shirt },
   { id: "joyas", label: "Joyas", icon: Gem },
   { id: "rostro", label: "Cerca del rostro", icon: Smile },
+  { id: "belleza", label: "Cabello y maquillaje", icon: Brush },
+  { id: "gafas", label: "Gafas", icon: Glasses },
+  { id: "favoritos", label: "Favoritos", icon: Heart },
   { id: "informe", label: "Informe", icon: Download },
 ] as const satisfies readonly TabItem[];
 
@@ -60,7 +69,10 @@ export default function ResultadoPage() {
   const skinColor = useAnalysisStore((s) => s.skinColor);
   const answers = useAnalysisStore((s) => s.answers);
   const preferences = useAnalysisStore((s) => s.preferences);
+  const setPreferences = useAnalysisStore((s) => s.setPreferences);
   const resetAll = useAnalysisStore((s) => s.resetAll);
+  const favorites = useFavoritesStore((s) => s.items);
+  const clearFavorites = useFavoritesStore((s) => s.clearAll);
 
   const hydrated = useHasHydrated();
   const { activeTab, setTab } = useTabHash<TabId>(TAB_IDS, "resultado");
@@ -76,10 +88,13 @@ export default function ResultadoPage() {
     if (hydrated && !classification && !navigatingRef.current) router.replace("/");
   }, [hydrated, classification, router]);
 
-  const leaveTo = (path: string) => {
+  const leaveTo = (path: string, alsoClearFavorites = false) => {
     navigatingRef.current = true;
     router.push(path);
     resetAll();
+    // "Borrar mis datos" promete limpiar lo guardado en este navegador; los
+    // favoritos viven en localStorage, así que dejarlos haría falsa la promesa.
+    if (alsoClearFavorites) clearFavorites();
   };
 
   // La guía es determinista, así que memoizarla solo evita recalcular al
@@ -156,8 +171,13 @@ export default function ResultadoPage() {
       {/* 1 · TU RESULTADO */}
       <TabPanel id="resultado" activeId={activeTab}>
         <section className="mb-8">
-          <span className="label-brand">Por qué este resultado</span>
-          <p className="mt-3 text-pretty leading-relaxed text-ink-soft">{guide.personalWhy}</p>
+          <p className="text-pretty leading-relaxed text-ink-soft">{guide.personalWhy}</p>
+          {guide.lowConfidenceNote && (
+            <Card tone="blush" className="mt-3 flex items-start gap-2.5">
+              <AlertTriangle size={17} className="mt-0.5 shrink-0 text-brand-700" aria-hidden="true" />
+              <p className="text-sm text-ink-soft">{guide.lowConfidenceNote}</p>
+            </Card>
+          )}
         </section>
 
         <section className="mb-8 grid grid-cols-2 gap-3">
@@ -266,13 +286,134 @@ export default function ResultadoPage() {
           </p>
         </section>
 
+        <div className="mb-5">
+          <StylePreferencesPanel preferences={preferences} onChange={setPreferences} />
+        </div>
+
         <ul className="flex flex-col gap-5">
           {guide.outfits.map((outfit) => (
             <li key={outfit.id}>
-              <OutfitCard outfit={outfit} />
+              <OutfitCard outfit={outfit} seasonId={guide.seasonId} />
             </li>
           ))}
         </ul>
+      </TabPanel>
+
+      {/* 6 · CABELLO Y MAQUILLAJE */}
+      <TabPanel id="belleza" activeId={activeTab}>
+        <section className="mb-8">
+          <span className="label-brand">Cabello</span>
+          <h2 className="mb-4 mt-2 font-serif text-2xl font-light text-ink">Tonos compatibles</h2>
+          <NamedSwatchGrid colors={guide.hair.tones} columns={3} />
+
+          <h3 className="mb-3 mt-6 font-serif text-lg text-ink">Reflejos</h3>
+          <NamedSwatchGrid colors={guide.hair.highlights} columns={3} />
+
+          <Card tone="blush" className="mt-4">
+            <p className="text-sm leading-relaxed text-ink-soft">{guide.hair.avoid}</p>
+          </Card>
+          <p className="mt-2 text-xs leading-relaxed text-ink-muted">{guide.hair.note}</p>
+        </section>
+
+        <section>
+          <span className="label-brand">Maquillaje</span>
+          <h2 className="mb-4 mt-2 font-serif text-2xl font-light text-ink">Familias de tono</h2>
+
+          <div className="mb-5">
+            <h3 className="mb-2 font-serif text-lg text-ink">Labios</h3>
+            <NamedSwatchGrid colors={guide.makeup.lips} columns={4} />
+          </div>
+          <div className="mb-5">
+            <h3 className="mb-2 font-serif text-lg text-ink">Rubor</h3>
+            <NamedSwatchGrid colors={guide.makeup.blush} columns={4} />
+          </div>
+          <div className="mb-5">
+            <h3 className="mb-2 font-serif text-lg text-ink">Sombras</h3>
+            <NamedSwatchGrid colors={guide.makeup.eyes} columns={4} />
+          </div>
+
+          <Card>
+            <p className="label-brand text-[9px]">Base</p>
+            <p className="mt-1.5 text-sm text-ink">{guide.makeup.baseFamily}</p>
+          </Card>
+          <p className="mt-2 text-xs leading-relaxed text-ink-muted">{guide.makeup.note}</p>
+        </section>
+      </TabPanel>
+
+      {/* 7 · GAFAS */}
+      <TabPanel id="gafas" activeId={activeTab}>
+        <section>
+          <span className="label-brand">Monturas</span>
+          <h2 className="mb-4 mt-2 font-serif text-2xl font-light text-ink">
+            Colores de montura
+          </h2>
+          <NamedSwatchGrid colors={guide.glasses.frames} columns={3} />
+
+          <div className="mt-5 grid grid-cols-2 gap-3">
+            <Card>
+              <p className="label-brand text-[9px]">Metales</p>
+              <p className="mt-1.5 text-sm text-ink">{guide.glasses.metals.join(" · ")}</p>
+            </Card>
+            <Card>
+              <p className="label-brand text-[9px]">Acabado</p>
+              <p className="mt-1.5 text-sm text-ink">{guide.glasses.finish}</p>
+            </Card>
+          </div>
+
+          <Card tone="blush" className="mt-3">
+            <p className="text-sm leading-relaxed text-ink-soft">{guide.glasses.note}</p>
+          </Card>
+        </section>
+      </TabPanel>
+
+      {/* 8 · FAVORITOS */}
+      <TabPanel id="favoritos" activeId={activeTab}>
+        <section>
+          <span className="label-brand">Lo que guardaste</span>
+          <h2 className="mb-4 mt-2 font-serif text-2xl font-light text-ink">Tus favoritos</h2>
+
+          {favorites.length === 0 ? (
+            <Card className="py-10 text-center">
+              <Heart size={26} className="mx-auto mb-3 text-brand-300" aria-hidden="true" />
+              <p className="text-sm text-ink-soft">
+                Todavía no has guardado nada. Toca el corazón en un conjunto o un color.
+              </p>
+            </Card>
+          ) : (
+            <ul className="flex flex-col gap-2">
+              {favorites.map((fav) => (
+                <li key={fav.id}>
+                  <Card className="flex items-center gap-3">
+                    {fav.hex ? (
+                      <span
+                        className="h-10 w-10 shrink-0 rounded-xl ring-1 ring-inset ring-black/10"
+                        style={{ backgroundColor: fav.hex }}
+                        aria-hidden="true"
+                      />
+                    ) : (
+                      <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-brand-100 text-brand-700">
+                        <Shirt size={17} aria-hidden="true" />
+                      </span>
+                    )}
+                    <span className="min-w-0 flex-1">
+                      <span className="block truncate text-sm text-ink">{fav.label}</span>
+                      <span className="block text-xs text-ink-muted">
+                        {fav.kind === "outfit" ? "Conjunto" : "Color"}
+                      </span>
+                    </span>
+                    <FavoriteButton
+                      kind={fav.kind}
+                      itemId={fav.itemId}
+                      seasonId={fav.seasonId}
+                      label={fav.label}
+                      hex={fav.hex}
+                    />
+                  </Card>
+                </li>
+              ))}
+            </ul>
+          )}
+        </section>
       </TabPanel>
 
       {/* 4 · JOYAS */}
@@ -517,7 +658,7 @@ export default function ResultadoPage() {
             <RotateCcw size={18} strokeWidth={1.75} aria-hidden="true" />
             Repetir análisis
           </Button>
-          <Button variant="ghost" onClick={() => leaveTo("/")} className="sm:flex-1">
+          <Button variant="ghost" onClick={() => leaveTo("/", true)} className="sm:flex-1">
             <Trash2 size={18} strokeWidth={1.75} aria-hidden="true" />
             Borrar mis datos
           </Button>

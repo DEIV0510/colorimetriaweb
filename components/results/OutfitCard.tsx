@@ -4,11 +4,19 @@ import { useState } from "react";
 import { ChevronDown } from "lucide-react";
 import { Badge } from "@/components/ui/Badge";
 import { FlatLay, describeOutfit } from "@/components/illustrations/FlatLay";
-import { formatMetal } from "@/lib/style/harmony";
+import { formatMetal, RELATION_LABELS } from "@/lib/style/harmony";
 import { OCCASION_LABELS, ROLE_LABELS, SLOT_LABELS } from "@/types/style";
 import type { OutfitCombination } from "@/types/style";
+import type { SeasonId } from "@/types/classification";
+import { FavoriteButton } from "./FavoriteButton";
 
-export function OutfitCard({ outfit }: { outfit: OutfitCombination }) {
+export function OutfitCard({
+  outfit,
+  seasonId,
+}: {
+  outfit: OutfitCombination;
+  seasonId: SeasonId;
+}) {
   const [expanded, setExpanded] = useState(false);
 
   return (
@@ -21,6 +29,15 @@ export function OutfitCard({ outfit }: { outfit: OutfitCombination }) {
         />
         <span className="absolute left-3 top-3">
           <Badge>{OCCASION_LABELS[outfit.occasion]}</Badge>
+        </span>
+        <span className="absolute right-2 top-2">
+          <FavoriteButton
+            kind="outfit"
+            itemId={outfit.id}
+            seasonId={seasonId}
+            label={outfit.title}
+            tone="overlay"
+          />
         </span>
       </div>
 
@@ -92,13 +109,31 @@ export function OutfitCard({ outfit }: { outfit: OutfitCombination }) {
               </p>
             </div>
 
+            {/* Las métricas van como datos, no como prosa */}
+            <div className="flex flex-wrap gap-2">
+              <Badge tone="neutral">{RELATION_LABELS[outfit.harmony.relation]}</Badge>
+              <Badge tone="neutral">Contraste {outfit.harmony.contrastBand}</Badge>
+              {outfit.harmony.hueDistance > 0 && (
+                <Badge tone="neutral">{outfit.harmony.hueDistance}° de tono</Badge>
+              )}
+            </div>
+
             <div>
               <p className="mb-1 text-[10px] uppercase tracking-[0.14em] text-brand-700">
-                Por qué armoniza contigo
+                Por qué funciona
               </p>
               <p className="text-sm leading-relaxed text-ink-soft">
                 {outfit.harmonyExplanation}
               </p>
+              {(outfit.contrastTip || outfit.accentTip) && (
+                <ul className="mt-2 flex flex-col gap-1">
+                  {[outfit.contrastTip, outfit.accentTip].filter(Boolean).map((tip) => (
+                    <li key={tip} className="text-sm text-ink-muted">
+                      · {tip}
+                    </li>
+                  ))}
+                </ul>
+              )}
             </div>
           </div>
         )}

@@ -8,7 +8,8 @@ import { getSeasonColorIndex } from "./color-index";
 import { selectOutfits } from "./build-outfits";
 import { classifyFaceColors } from "./face-colors";
 import { selectColorCombinations } from "./color-combinations";
-import { composePersonalWhy } from "./compose-explanation";
+import { composePersonalWhy, lowConfidenceNote } from "./compose-explanation";
+import { selectGlasses, selectHair, selectMakeup } from "./beauty";
 import { pickMany } from "./seeded-random";
 
 export function selectJewelry(
@@ -108,20 +109,24 @@ export function buildStyleGuide(
   return {
     seasonId,
     personalWhy: composePersonalWhy({
-      features: classification.features,
       essence: voice.essence,
       signatureColors: faceColors.highlyRecommended,
       avoidColors: index.avoid,
       confidence: classification.confidence,
-      secondarySeasonName: secondarySeason.name,
     }),
+    lowConfidenceNote: lowConfidenceNote(classification.confidence),
+    secondarySeasonName: secondarySeason.name,
     essence: voice.essence,
     outfits: selectOutfits(classification, preferences),
     faceColors,
     combinations: selectColorCombinations(seasonId, classification.features),
     jewelry: selectJewelry(seasonId, classification.features),
+    hair: selectHair(seasonId, classification.features),
+    makeup: selectMakeup(seasonId, classification.features),
+    glasses: selectGlasses(seasonId, classification.features),
   };
 }
 
 export { selectOutfits, classifyFaceColors, selectColorCombinations };
+export { selectHair, selectMakeup, selectGlasses } from "./beauty";
 export { getSeasonColorIndex } from "./color-index";

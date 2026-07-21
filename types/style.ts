@@ -135,8 +135,12 @@ export interface OutfitCombination {
   accent: NamedColor | null;
   metal: MetalAdvice;
   harmony: HarmonyMetrics;
-  /** Explicación compuesta a partir de métricas reales, no una plantilla plana */
+  /** Una sola frase: qué hacer con este conjunto */
   harmonyExplanation: string;
+  /** Consejo de contraste, solo si aporta algo */
+  contrastTip: string | null;
+  /** Cómo llevar el acento, si lo hay */
+  accentTip: string | null;
   styleTags: StyleVibe[];
   presentation: Presentation;
 }
@@ -203,13 +207,49 @@ export interface SeasonStyleVoice {
 
 export interface StyleGuide {
   seasonId: SeasonId;
-  /** Explicación personalizada del porqué del resultado */
+  /** Dos frases: qué te favorece y qué evitar */
   personalWhy: string;
+  /** Solo si la confianza es baja; se muestra como aviso, no en el cuerpo */
+  lowConfidenceNote: string | null;
+  secondarySeasonName: string;
   essence: string;
   outfits: OutfitCombination[];
   faceColors: FaceColorGuide;
   combinations: ColorCombination[];
   jewelry: JewelryGuide;
+  hair: HairGuide;
+  makeup: MakeupGuide;
+  glasses: GlassesGuide;
+}
+
+// ---------------------------------------------------------------------------
+// Cabello, maquillaje y gafas — visuales, con una línea de texto por bloque
+// ---------------------------------------------------------------------------
+
+export interface HairGuide {
+  /** Tonos compatibles, como muestras */
+  tones: NamedColor[];
+  /** Reflejos sugeridos */
+  highlights: NamedColor[];
+  /** Qué evita, en una línea */
+  avoid: string;
+  note: string;
+}
+
+export interface MakeupGuide {
+  lips: NamedColor[];
+  blush: NamedColor[];
+  eyes: NamedColor[];
+  /** Familia de base según subtono, sin referencias comerciales */
+  baseFamily: string;
+  note: string;
+}
+
+export interface GlassesGuide {
+  frames: NamedColor[];
+  metals: string[];
+  finish: string;
+  note: string;
 }
 
 // ---------------------------------------------------------------------------

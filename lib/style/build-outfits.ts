@@ -19,7 +19,11 @@ import {
   type SeasonColorIndex,
 } from "./color-index";
 import { measureHarmony } from "./harmony";
-import { composeOutfitExplanation } from "./compose-explanation";
+import {
+  composeAccentTip,
+  composeContrastTip,
+  composeOutfitExplanation,
+} from "./compose-explanation";
 import { pick } from "./seeded-random";
 
 /** Separación mínima de luminosidad entre prendas contiguas. Sin ella, un
@@ -179,7 +183,6 @@ function buildOutfit(
     metal,
     harmony,
     harmonyExplanation: composeOutfitExplanation({
-      pieces,
       primary,
       neutral,
       accent,
@@ -188,6 +191,8 @@ function buildOutfit(
       occasion: template.occasion,
       voice,
     }),
+    contrastTip: composeContrastTip(harmony, classification.features.contrast),
+    accentTip: composeAccentTip(accent, classification.features),
     styleTags: template.styleTags,
     presentation,
   };
