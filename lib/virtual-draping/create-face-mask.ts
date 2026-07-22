@@ -154,7 +154,9 @@ export async function createFaceMask(photoDataUrl: string): Promise<FaceMask> {
   const source = document.createElement("canvas");
   source.width = width;
   source.height = height;
-  const sourceCtx = source.getContext("2d");
+  // MediaPipe y el recorte del fondo leen este lienzo varias veces: sin la
+  // bandera, el navegador lo mantiene en GPU y cada lectura fuerza un volcado.
+  const sourceCtx = source.getContext("2d", { willReadFrequently: true });
   if (!sourceCtx) throw new FaceMaskError("No se pudo preparar la imagen.");
   sourceCtx.drawImage(image, 0, 0, width, height);
 
@@ -249,7 +251,7 @@ export async function createFaceMask(photoDataUrl: string): Promise<FaceMask> {
   const output = document.createElement("canvas");
   output.width = width;
   output.height = height;
-  const outputCtx = output.getContext("2d");
+  const outputCtx = output.getContext("2d", { willReadFrequently: true });
   if (!outputCtx) throw new FaceMaskError("No se pudo recortar la imagen.");
   outputCtx.drawImage(source, 0, 0);
   outputCtx.globalCompositeOperation = "destination-in";

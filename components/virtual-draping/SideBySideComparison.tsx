@@ -30,13 +30,17 @@ export function SideBySideComparison({
   mask,
   comparisons,
   features,
+  index,
+  onIndexChange,
 }: {
   mask: FaceMask;
   comparisons: ColorComparison[];
   features: DetectedFeatures;
+  /** El par activo vive arriba: el visor lo necesita para exportar la imagen */
+  index: number;
+  onIndexChange: (index: number) => void;
 }) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
-  const [index, setIndex] = useState(0);
   // Se guarda PARA QUÉ comparación se reveló el veredicto, en vez de un
   // booleano que haya que resetear por efecto: al cambiar de par, deja de
   // coincidir y el veredicto se oculta solo. La idea es que la persona mire
@@ -68,7 +72,7 @@ export function SideBySideComparison({
           <button
             key={comparison.id}
             type="button"
-            onClick={() => setIndex(i)}
+            onClick={() => onIndexChange(i)}
             aria-pressed={i === index}
             className={`inline-flex min-h-10 shrink-0 items-center rounded-full border px-3.5 font-sans text-sm transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-500 focus-visible:ring-offset-2 focus-visible:ring-offset-blush ${
               i === index

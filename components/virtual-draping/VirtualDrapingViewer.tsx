@@ -1,10 +1,12 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { AlertTriangle, Camera } from "lucide-react";
 import type { DetectedFeatures, SeasonId } from "@/types/classification";
 import type { DrapingColor, FaceMask } from "@/types/virtual-draping";
 import { GROUP_LABELS } from "@/types/virtual-draping";
+import type { JewelryPiece } from "@/data/metal-palettes";
+import type { GarmentTemplateId } from "@/data/garment-templates";
 import { SEASONS, SEASON_LIST } from "@/data/seasons";
 import { getDrapingPalette, getStarterSelection } from "@/data/draping-palettes";
 import { createFaceMask, FaceMaskError } from "@/lib/virtual-draping/create-face-mask";
@@ -13,15 +15,24 @@ import { ColorFan } from "./ColorFan";
 import { ColorCarousel } from "./ColorCarousel";
 import { FabricDrape } from "./FabricDrape";
 import { SideBySideComparison } from "./SideBySideComparison";
+import { VirtualGarment } from "./VirtualGarment";
+import { MetalComparison } from "./MetalComparison";
+import { GarmentAnalyzer } from "./GarmentAnalyzer";
+import { ExportImageButton } from "./ExportImageButton";
 
-/** Modos disponibles. Prenda y metales llegan en las fases siguientes. */
-type Mode = "abanico" | "tela" | "comparar";
+type Mode = "abanico" | "tela" | "prenda" | "comparar" | "metales" | "analizar";
 
 const MODE_LABELS: Record<Mode, string> = {
   abanico: "Abanico",
   tela: "Tela",
+  prenda: "Prenda",
   comparar: "Comparar",
+  metales: "Metales",
+  analizar: "Mi ropa",
 };
+
+/** En estos modos el color activo lo elige el carrusel de la paleta */
+const PALETTE_MODES: Mode[] = ["abanico", "tela", "prenda"];
 
 
 /** Grupos que se pueden ver en el abanico */
@@ -57,6 +68,15 @@ export function VirtualDrapingViewer({
   const [scope, setScope] = useState<FanScope>("inicial");
   const [pickedId, setPickedId] = useState<string | null>(null);
   const [fabricTexture, setFabricTexture] = useState(true);
+  const [templateId, setTemplateId] = useState<GarmentTemplateId>("camiseta");
+  const [metalId, setMetalId] = useState("oro-amarillo");
+  const [piece, setPiece] = useState<JewelryPiece>("aretes-medianos");
+  const [comparisonIndex, setComparisonIndex] = useState(0);
+
+  // Para exportar se toma el lienzo que esté visible, sea cual sea el modo. Así
+  // cada componente conserva su propio ref y no hay que enhebrarlos hacia arriba.
+  const stageRef = useRef<HTMLDivElement>(null);
+  const getVisibleCanvas = () => stageRef.current?.querySelector("canvas") ?? null;
 
   // El rostro se detecta UNA sola vez. Cambiar de color o de estación después
   // solo repinta el lienzo: nunca se vuelve a analizar la imagen.
@@ -165,6 +185,18 @@ export function VirtualDrapingViewer({
 
   const selectedColor = fanColors.find((c) => c.id === selectedId) ?? fanColors[0];
   const comparisons = buildComparisons(activeSeason, features);
+  // Al cambiar de estación el número de pares puede variar, así que el índice
+  // se acota antes de usarlo.
+  const safeComparisonIndex = Math.min(
+    comparisonIndex,
+    Math.max(0, comparisons.length - 1)
+  );
+  const currentComparison = comparisons[safeComparisonIndex];
+  const showsPalette = PALETTE_MODES.includes(mode);
+
+  // Si la selfie está encuadrada al rostro, los hombros no salen y la prenda se
+  // dibuja con una plantilla. Conviene decirlo en vez de fingir un retrato.
+  const shouldersApproximate = mask.chinY + mask.radius.y * 0.55 > mask.height;
 
   return (
     <div className="flex flex-col gap-5">
@@ -191,40 +223,66 @@ export function VirtualDrapingViewer({
         ))}
       </div>
 
-      {mode === "comparar" ? (
-        <SideBySideComparison
-          mask={mask}
-          comparisons={comparisons}
-          features={features}
-        />
-      ) : mode === "tela" ? (
-        <>
-          {selectedColor && (
-            <FabricDrape mask={mask} color={selectedColor} fabric={fabricTexture} />
-          )}
-          <label className="flex cursor-pointer items-center gap-2.5 text-sm text-ink-soft">
-            <input
-              type="checkbox"
-              checked={fabricTexture}
-              onChange={(e) => setFabricTexture(e.target.checked)}
-              className="h-5 w-5 shrink-0 accent-brand-600"
+      <div ref={stageRef} className="flex flex-col gap-4">
+        {mode === "analizar" ? (
+          <GarmentAnalyzer seasonId={activeSeason} features={features} />
+        ) : mode === "metales" ? (
+          <MetalComparison
+            mask={mask}
+            features={features}
+            backdropHex={selectedColor?.hex ?? "#EDE8E3"}
+            metalId={metalId}
+            onMetalChange={setMetalId}
+            piece={piece}
+            onPieceChange={setPiece}
+          />
+        ) : mode === "comparar" ? (
+          <SideBySideComparison
+            mask={mask}
+            comparisons={comparisons}
+            features={features}
+            index={safeComparisonIndex}
+            onIndexChange={setComparisonIndex}
+          />
+        ) : mode === "prenda" ? (
+          selectedColor && (
+            <VirtualGarment
+              mask={mask}
+              color={selectedColor}
+              templateId={templateId}
+              onTemplateChange={setTemplateId}
+              approximate={shouldersApproximate}
             />
-            Simular pliegues de tela
-          </label>
-        </>
-      ) : (
-        <ColorFan
-          mask={mask}
-          colors={fanColors}
-          highlightedId={selectedId}
-          seasonName={palette.seasonName}
-        />
-      )}
+          )
+        ) : mode === "tela" ? (
+          <>
+            {selectedColor && (
+              <FabricDrape mask={mask} color={selectedColor} fabric={fabricTexture} />
+            )}
+            <label className="flex cursor-pointer items-center gap-2.5 text-sm text-ink-soft">
+              <input
+                type="checkbox"
+                checked={fabricTexture}
+                onChange={(e) => setFabricTexture(e.target.checked)}
+                className="h-5 w-5 shrink-0 accent-brand-600"
+              />
+              Simular pliegues de tela
+            </label>
+          </>
+        ) : (
+          <ColorFan
+            mask={mask}
+            colors={fanColors}
+            highlightedId={selectedId}
+            seasonName={palette.seasonName}
+          />
+        )}
+      </div>
 
-      {/* Qué colores mostrar. No aplica en la comparación, que trae sus pares. */}
+      {/* Qué colores mostrar. Solo donde el color lo elige la paleta. */}
       <div
         className={`-mx-5 flex gap-2 overflow-x-auto px-5 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden ${
-          mode === "comparar" ? "hidden" : ""
+          showsPalette ? "" : "hidden"
         }`}
         role="group"
         aria-label="Qué colores mostrar"
@@ -246,11 +304,20 @@ export function VirtualDrapingViewer({
         ))}
       </div>
 
-      {mode !== "comparar" && (
+      {showsPalette && (
         <ColorCarousel
           colors={fanColors}
           selectedId={selectedId}
           onSelect={setPickedId}
+        />
+      )}
+
+      {mode !== "analizar" && (
+        <ExportImageButton
+          getCanvas={getVisibleCanvas}
+          seasonName={palette.seasonName}
+          color={mode === "comparar" ? currentComparison?.a ?? null : selectedColor ?? null}
+          secondColor={mode === "comparar" ? currentComparison?.b ?? null : null}
         />
       )}
 
@@ -283,9 +350,9 @@ export function VirtualDrapingViewer({
       </div>
 
       <p className="rounded-2xl bg-blush-100 p-3 text-xs leading-relaxed text-ink-soft">
-        Tu fotografía no se modifica: los colores se colocan detrás del rostro, nunca
-        encima. Es una simulación orientativa; la luz de la foto influye en cómo se
-        percibe cada tono.
+        Tu fotografía no se modifica: los colores se colocan detrás del rostro y las
+        joyas por debajo de la mandíbula. Todo se dibuja en tu teléfono. Es una
+        simulación orientativa; la luz de la foto influye en cómo se percibe cada tono.
       </p>
     </div>
   );
