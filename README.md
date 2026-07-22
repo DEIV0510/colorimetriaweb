@@ -28,6 +28,19 @@ de confianza según coincida o no con la temperatura medida. Cualquier peso, por
 que fuera, podía cruzar un umbral de banda cuando el valor base caía justo en el borde,
 así que se dejó fuera del cálculo. Un test lo verifica sobre 35 perfiles distintos.
 
+## Prueba virtual de colores
+
+Sobre la selfie real, sin generar otra persona ni retocar la piel. Seis modos:
+abanico cromático, tela virtual, prenda virtual (8 plantillas), comparación lado a
+lado, metales y joyas (8 metales, 4 piezas) y análisis de una prenda fotografiada.
+
+La garantía es **arquitectónica, no cosmética**: el color se pinta siempre DEBAJO del
+recorte de la selfie, sin filtros ni modos de mezcla, de modo que los píxeles de piel
+son idénticos con cualquier color de fondo. Las joyas son la única excepción —van
+encima, como en la realidad— y por eso se limitan por geometría a la zona por debajo
+de la mandíbula. `lib/virtual-draping/skin-integrity.test.ts` y `jewelry-guard.test.ts`
+verifican ambas reglas.
+
 ## Stack
 
 - Next.js 16 (App Router) + TypeScript
@@ -143,3 +156,7 @@ Estas requieren dispositivos reales y **no** se pueden verificar automáticament
 - [ ] Rostro fuera de posición / demasiado cerca / demasiado lejos
 - [ ] Uso de gafas (debe pedir retirarlas)
 - [ ] Instalación como PWA en Android e iOS
+- [ ] Prueba virtual con **pelo suelto, gafas y fondo con textura**: el recorte se ha
+      verificado con un rostro sintético y con fondo liso, que es su caso favorable
+- [ ] Hoja de compartir del sistema en iOS y Android (el botón «Descargar imagen»
+      queda siempre como alternativa si esa hoja falla)
