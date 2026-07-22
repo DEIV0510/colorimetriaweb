@@ -1,5 +1,6 @@
 import { describe, expect, it } from "vitest";
 import { renderColorFan, renderSingleColor } from "./render-color-fan";
+import { renderFabricDrape, renderSideBySide } from "./render-fabric-drape";
 import type { DrapingColor, FaceMask } from "@/types/virtual-draping";
 
 /**
@@ -71,6 +72,13 @@ function createFakeCanvas(): HTMLCanvasElement & { __fake: FakePixelCanvas } {
     moveTo: () => {},
     lineTo: () => {},
     arc: () => {},
+    save: () => state.operations.push("save"),
+    restore: () => state.operations.push("restore"),
+    translate: () => {},
+    clip: () => state.operations.push("clip"),
+    rect: () => {},
+    quadraticCurveTo: () => {},
+    createLinearGradient: () => ({ addColorStop: () => {} }),
     fill() {
       state.operations.push(`fill:${this._fill}`);
     },
@@ -205,6 +213,49 @@ describe("integridad de la piel", () => {
     );
     const face = ops.indexOf("drawImage:face");
     expect(face).toBeGreaterThan(lastColor);
+  });
+
+  it("mantiene la piel intacta con cualquier color de tela", () => {
+    const mask = makeMask();
+
+    const oscura = createFakeCanvas();
+    renderFabricDrape(oscura, mask, { hex: "#0B0B0B", fabric: true });
+
+    const clara = createFakeCanvas();
+    renderFabricDrape(clara, mask, { hex: "#FFFFFF", fabric: true });
+
+    expect(skinPixelsOf(oscura)).toEqual(skinPixelsOf(clara));
+    expect(skinPixelsOf(oscura).length).toBe(SKIN_PIXELS.size);
+  });
+
+  // Los pliegues son sombras y luces DENTRO de la tela. Si se salieran de su
+  // recorte caerían sobre la cara y alterarían el tono de piel.
+  it("no deja que los pliegues de la tela toquen el rostro", () => {
+    const mask = makeMask();
+
+    const conPliegues = createFakeCanvas();
+    renderFabricDrape(conPliegues, mask, { hex: "#B5541A", fabric: true });
+
+    const sinPliegues = createFakeCanvas();
+    renderFabricDrape(sinPliegues, mask, { hex: "#B5541A", fabric: false });
+
+    expect(skinPixelsOf(conPliegues)).toEqual(skinPixelsOf(sinPliegues));
+  });
+
+  // Si el rostro se dibujara distinto en cada mitad, la persona estaría
+  // comparando dos caras en vez de dos colores.
+  it("dibuja el mismo rostro en los dos lados de la comparación", () => {
+    const mask = makeMask();
+    const canvas = createFakeCanvas();
+    renderSideBySide(canvas, mask, "#000000", "#FFFFFF");
+
+    const dibujos = canvas.__fake.operations.filter((op) => op === "drawImage:face");
+    expect(dibujos).toHaveLength(2);
+    // Y ninguna mezcla ni filtro en el proceso
+    expect(canvas.__fake.filters).toHaveLength(0);
+    expect(
+      canvas.__fake.composites.filter((op) => op !== "source-over")
+    ).toHaveLength(0);
   });
 
   it("mantiene la piel intacta también en el abanico completo", () => {

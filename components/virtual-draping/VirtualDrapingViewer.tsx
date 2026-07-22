@@ -8,8 +8,20 @@ import { GROUP_LABELS } from "@/types/virtual-draping";
 import { SEASONS, SEASON_LIST } from "@/data/seasons";
 import { getDrapingPalette, getStarterSelection } from "@/data/draping-palettes";
 import { createFaceMask, FaceMaskError } from "@/lib/virtual-draping/create-face-mask";
+import { buildComparisons } from "@/data/color-comparisons";
 import { ColorFan } from "./ColorFan";
 import { ColorCarousel } from "./ColorCarousel";
+import { FabricDrape } from "./FabricDrape";
+import { SideBySideComparison } from "./SideBySideComparison";
+
+/** Modos disponibles. Prenda y metales llegan en las fases siguientes. */
+type Mode = "abanico" | "tela" | "comparar";
+
+const MODE_LABELS: Record<Mode, string> = {
+  abanico: "Abanico",
+  tela: "Tela",
+  comparar: "Comparar",
+};
 
 
 /** Grupos que se pueden ver en el abanico */
@@ -40,9 +52,11 @@ export function VirtualDrapingViewer({
     { ok: true; mask: FaceMask } | { ok: false; message: string } | null
   >(null);
 
+  const [mode, setMode] = useState<Mode>("abanico");
   const [activeSeason, setActiveSeason] = useState<SeasonId>(seasonId);
   const [scope, setScope] = useState<FanScope>("inicial");
   const [pickedId, setPickedId] = useState<string | null>(null);
+  const [fabricTexture, setFabricTexture] = useState(true);
 
   // El rostro se detecta UNA sola vez. Cambiar de color o de estación después
   // solo repinta el lienzo: nunca se vuelve a analizar la imagen.
@@ -149,18 +163,69 @@ export function VirtualDrapingViewer({
     ),
   ];
 
+  const selectedColor = fanColors.find((c) => c.id === selectedId) ?? fanColors[0];
+  const comparisons = buildComparisons(activeSeason, features);
+
   return (
     <div className="flex flex-col gap-5">
-      <ColorFan
-        mask={mask}
-        colors={fanColors}
-        highlightedId={selectedId}
-        seasonName={palette.seasonName}
-      />
-
-      {/* Qué se ve en el abanico */}
+      {/* Modo de visualización */}
       <div
         className="-mx-5 flex gap-2 overflow-x-auto px-5 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
+        role="group"
+        aria-label="Modo de prueba"
+      >
+        {(Object.keys(MODE_LABELS) as Mode[]).map((option) => (
+          <button
+            key={option}
+            type="button"
+            onClick={() => setMode(option)}
+            aria-pressed={mode === option}
+            className={`inline-flex min-h-10 shrink-0 items-center rounded-full px-4 font-sans text-sm transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-500 focus-visible:ring-offset-2 focus-visible:ring-offset-blush ${
+              mode === option
+                ? "bg-brand-gradient font-semibold text-white shadow-glow"
+                : "text-ink-soft hover:text-brand-700"
+            }`}
+          >
+            {MODE_LABELS[option]}
+          </button>
+        ))}
+      </div>
+
+      {mode === "comparar" ? (
+        <SideBySideComparison
+          mask={mask}
+          comparisons={comparisons}
+          features={features}
+        />
+      ) : mode === "tela" ? (
+        <>
+          {selectedColor && (
+            <FabricDrape mask={mask} color={selectedColor} fabric={fabricTexture} />
+          )}
+          <label className="flex cursor-pointer items-center gap-2.5 text-sm text-ink-soft">
+            <input
+              type="checkbox"
+              checked={fabricTexture}
+              onChange={(e) => setFabricTexture(e.target.checked)}
+              className="h-5 w-5 shrink-0 accent-brand-600"
+            />
+            Simular pliegues de tela
+          </label>
+        </>
+      ) : (
+        <ColorFan
+          mask={mask}
+          colors={fanColors}
+          highlightedId={selectedId}
+          seasonName={palette.seasonName}
+        />
+      )}
+
+      {/* Qué colores mostrar. No aplica en la comparación, que trae sus pares. */}
+      <div
+        className={`-mx-5 flex gap-2 overflow-x-auto px-5 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden ${
+          mode === "comparar" ? "hidden" : ""
+        }`}
         role="group"
         aria-label="Qué colores mostrar"
       >
@@ -181,11 +246,13 @@ export function VirtualDrapingViewer({
         ))}
       </div>
 
-      <ColorCarousel
-        colors={fanColors}
-        selectedId={selectedId}
-        onSelect={setPickedId}
-      />
+      {mode !== "comparar" && (
+        <ColorCarousel
+          colors={fanColors}
+          selectedId={selectedId}
+          onSelect={setPickedId}
+        />
+      )}
 
       {/* Comparar con otra estación */}
       <div>
