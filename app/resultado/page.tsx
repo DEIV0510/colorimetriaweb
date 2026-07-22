@@ -16,6 +16,7 @@ import {
   Smile,
   Sparkles,
   Trash2,
+  Wand2,
 } from "lucide-react";
 import { PageShell } from "@/components/ui/PageShell";
 import { Button } from "@/components/ui/Button";
@@ -27,6 +28,7 @@ import { NamedSwatchGrid } from "@/components/results/NamedSwatchGrid";
 import { OutfitCard } from "@/components/results/OutfitCard";
 import { SaveToAccount } from "@/components/results/SaveToAccount";
 import { StylePreferencesPanel } from "@/components/results/StylePreferencesPanel";
+import { VirtualDrapingViewer } from "@/components/virtual-draping/VirtualDrapingViewer";
 import { FavoriteButton } from "@/components/results/FavoriteButton";
 import { useAnalysisStore } from "@/lib/store/analysis-store";
 import { useFavoritesStore } from "@/lib/store/favorites-store";
@@ -49,6 +51,7 @@ const FEATURE_LABELS = {
 const TABS = [
   { id: "resultado", label: "Tu resultado", icon: Sparkles },
   { id: "paleta", label: "Tu paleta", icon: Palette },
+  { id: "probar", label: "Prueba tus colores", icon: Wand2 },
   { id: "outfits", label: "Tus outfits", icon: Shirt },
   { id: "joyas", label: "Joyas", icon: Gem },
   { id: "rostro", label: "Cerca del rostro", icon: Smile },
@@ -273,7 +276,27 @@ export default function ResultadoPage() {
         </section>
       </TabPanel>
 
-      {/* 3 · TUS OUTFITS */}
+      {/* 3 · PRUEBA VIRTUAL */}
+      <TabPanel id="probar" activeId={activeTab}>
+        <section className="mb-5">
+          <span className="label-brand">Con tu propia selfie</span>
+          <h2 className="mb-2 mt-2 font-serif text-2xl font-light text-ink">
+            Prueba tus colores en tiempo real
+          </h2>
+          <p className="text-sm leading-relaxed text-ink-soft">
+            Toca un color para verlo junto a tu rostro, como en una prueba de telas.
+          </p>
+        </section>
+
+        <VirtualDrapingViewer
+          photoDataUrl={photoDataUrl}
+          seasonId={classification.primary.seasonId}
+          secondarySeasonId={classification.secondary.seasonId}
+          features={classification.features}
+        />
+      </TabPanel>
+
+      {/* 4 · TUS OUTFITS */}
       <TabPanel id="outfits" activeId={activeTab}>
         <section className="mb-4">
           <span className="label-brand">Conjuntos para ti</span>
