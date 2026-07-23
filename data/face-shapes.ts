@@ -40,6 +40,19 @@ export interface FaceShapeContent {
   balance: FaceShapeBalance;
 }
 
+/**
+ * Resumen de proporciones por forma, en dos líneas cortas, para acompañar la
+ * silueta de referencia (como en las fichas clásicas de visagismo).
+ */
+export const SHAPE_PROPORTIONS: Record<FaceShapeId, [string, string]> = {
+  ovalo: ["Largo > Ancho", "Pómulos > Frente > Mandíbula"],
+  redondo: ["Largo = Ancho", "Pómulos = Frente = Mandíbula"],
+  cuadrado: ["Largo ≈ Ancho", "Frente = Pómulos = Mandíbula"],
+  corazon: ["Frente > Pómulos > Mandíbula", "Mentón estrecho"],
+  diamante: ["Pómulos > Frente = Mandíbula", "Mentón estrecho"],
+  alargado: ["Largo > Ancho", "Frente = Pómulos = Mandíbula"],
+};
+
 export const FACE_SHAPE_CONTENT: Record<FaceShapeId, FaceShapeContent> = {
   ovalo: {
     education: {

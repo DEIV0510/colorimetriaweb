@@ -14,6 +14,9 @@ import { ShapeRecommendations } from "./ShapeRecommendations";
 import { StyleSimulator } from "./StyleSimulator";
 import { StyleComparison } from "./StyleComparison";
 import { ShapeFaq } from "./ShapeFaq";
+import { IdealShapeSilhouette } from "./IdealShapeSilhouette";
+import { ShapeGallery } from "./ShapeGallery";
+import { SHAPE_PROPORTIONS } from "@/data/face-shapes";
 
 /**
  * Contenedor del Escáner de Geometría Facial.
@@ -79,6 +82,20 @@ export function FaceGeometryScanner({
           </p>
         </div>
 
+        {/* Silueta de referencia de la forma detectada */}
+        <div className="mt-4 flex items-center gap-4 rounded-[1.5rem] border border-line bg-white p-4">
+          <IdealShapeSilhouette
+            shape={result.primary.shape}
+            className="h-28 w-auto shrink-0"
+            title={`Silueta de referencia de un rostro ${primaryLabel.toLowerCase()}`}
+          />
+          <div className="min-w-0">
+            <p className="label-brand text-[9px]">Proporciones de tu forma</p>
+            <p className="mt-1.5 text-sm font-medium text-ink">{SHAPE_PROPORTIONS[result.primary.shape][0]}</p>
+            <p className="text-sm text-ink-soft">{SHAPE_PROPORTIONS[result.primary.shape][1]}</p>
+          </div>
+        </div>
+
         <p className="mt-4 text-pretty leading-relaxed text-ink-soft">
           {summarizeDiagnosis(result)}
         </p>
@@ -133,6 +150,16 @@ export function FaceGeometryScanner({
             </li>
           ))}
         </ul>
+      </section>
+
+      {/* Las seis formas, con la tuya resaltada */}
+      <section>
+        <span className="label-brand">El sistema completo</span>
+        <h3 className="mb-1 mt-2 font-serif text-xl font-light text-ink">Las seis formas</h3>
+        <p className="mb-4 text-sm leading-relaxed text-ink-soft">
+          Dónde encaja la tuya entre las demás. Desliza para verlas todas.
+        </p>
+        <ShapeGallery active={result.primary.shape} />
       </section>
 
       {/* Educación + balance por oposición */}
