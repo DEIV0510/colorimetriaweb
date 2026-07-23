@@ -5,9 +5,11 @@ import type { FaceShapeId } from "@/types/face-shape";
  *
  * El balance por oposición es el principio de visagismo que guía todo el módulo:
  * casi nunca se "corrige" un rostro, se EQUILIBRA introduciendo las líneas o los
- * volúmenes que le faltan y atenuando los que dominan. Cada forma pide lo
- * contrario de lo que le sobra, así que cada explicación es distinta por
+ * volúmenes que le faltan y atenuando los que predominan. Cada forma pide lo
+ * contrario de lo que ya domina, así que cada explicación es distinta por
  * definición: lo que equilibra un rostro redondo desequilibra uno alargado.
+ * Los criterios sirven a cualquier persona: se mezclan cabello, barba, cejas,
+ * monturas y accesorios sin dar por hecho el género de quien lee.
  *
  * Nada de esto es una regla obligatoria ni una norma estética: son criterios
  * orientativos de asesoría de imagen.
@@ -43,7 +45,7 @@ export const FACE_SHAPE_CONTENT: Record<FaceShapeId, FaceShapeContent> = {
     education: {
       tagline: "La proporción de referencia",
       essence:
-        "El óvalo se considera la forma más equilibrada porque sus proporciones se acercan al ideal clásico: la cara es algo más larga que ancha, los pómulos son la parte más amplia y todo desciende en una curva suave hasta un mentón redondeado.",
+        "El óvalo se toma como proporción de referencia en visagismo porque sus medidas están muy repartidas: la cara es algo más larga que ancha, los pómulos son la parte más amplia y todo desciende en una curva suave hasta un mentón redondeado. No es 'mejor' que las demás, solo la más equilibrada de partida.",
       proportions:
         "El largo ronda una vez y media el ancho, la frente es apenas más amplia que la mandíbula y la línea del rostro se afina de forma gradual, sin ángulos bruscos.",
       differentiators: [
@@ -56,12 +58,12 @@ export const FACE_SHAPE_CONTENT: Record<FaceShapeId, FaceShapeContent> = {
       principle:
         "Aquí el balance por oposición casi no interviene: el óvalo ya está equilibrado, así que el objetivo no es corregir nada, sino conservar esa armonía. El riesgo no es 'quedarse corto', sino romper la proporción con un elemento que sobresalga demasiado.",
       techniques: [
-        "Puedes permitirte casi cualquier corte, escote o montura: es la forma con más libertad.",
+        "Puedes permitirte casi cualquier corte, escote o montura: es la forma con más libertad de todas.",
         "Evita tapar del todo la frente o cargar mucho volumen en un solo lado, que desplazaría el eje de simetría.",
-        "Mantén una escala media en gafas y accesorios; los extremos son lo único que puede desequilibrarte.",
+        "Mantén una escala media en monturas y accesorios; los extremos son lo único que puede desequilibrarte.",
         "Si quieres un foco, realza los pómulos: es tu punto naturalmente más favorecido.",
       ],
-      goal: "Preservar el equilibrio que ya tienes en vez de introducir compensaciones que no necesitas.",
+      goal: "Conservar el equilibrio que ya tienes, en vez de introducir compensaciones que no necesitas.",
     },
   },
 
@@ -69,7 +71,7 @@ export const FACE_SHAPE_CONTENT: Record<FaceShapeId, FaceShapeContent> = {
     education: {
       tagline: "Suave y luminoso",
       essence:
-        "El rostro redondo mide casi lo mismo de largo que de ancho, con mejillas llenas, líneas curvas y una mandíbula y un nacimiento del pelo redondeados. Transmite suavidad y un aire juvenil.",
+        "El rostro redondo mide casi lo mismo de largo que de ancho, con mejillas llenas, líneas curvas y una mandíbula y un nacimiento del pelo redondeados. Suele percibirse suave y juvenil.",
       proportions:
         "Largo y ancho son casi iguales, la mayor anchura está en las mejillas y no hay ángulos marcados en ningún punto del contorno.",
       differentiators: [
@@ -80,14 +82,14 @@ export const FACE_SHAPE_CONTENT: Record<FaceShapeId, FaceShapeContent> = {
     },
     balance: {
       principle:
-        "Como al rostro redondo le faltan líneas verticales y ángulos, el balance por oposición consiste en aportárselos: se busca alargar visualmente y añadir algo de definición donde todo es curva.",
+        "Como al rostro redondo le faltan líneas verticales y ángulos, el balance por oposición consiste en aportárselos: se busca ganar altura y algo de definición donde todo es curva.",
       techniques: [
-        "Alarga con volumen en la coronilla y con líneas verticales que estiren la mirada hacia arriba.",
-        "Introduce ángulos y puntas —en el corte, en las gafas, en el escote— donde el rostro solo tiene curvas.",
-        "Prefiere escotes en V y en pico: abren una línea vertical que afina las mejillas.",
-        "En accesorios, alarga con colgantes y pendientes largos; evita los aros y las formas muy redondas, que repiten lo que ya sobra.",
+        "La altura manda: volumen en la coronilla y una raya lateral marcada estiran el rostro más que cualquier otro recurso.",
+        "Cambia curvas por líneas: capas largas rectas, puntas hacia dentro y un flequillo abierto en cortina crean los ángulos que la cara no tiene.",
+        "En barba, deja algo más de largo en el mentón que en las mejillas para alargar el óvalo; en cejas, una forma con ligera elevación aporta dirección.",
+        "Un escote en pico o en V abre una línea vertical que estira visualmente el tercio medio del rostro.",
       ],
-      goal: "Crear la ilusión de un rostro algo más largo y estructurado, restando protagonismo a la anchura de las mejillas.",
+      goal: "Que el rostro se lea algo más largo y con más estructura de la que tiene en realidad.",
     },
   },
 
@@ -100,18 +102,19 @@ export const FACE_SHAPE_CONTENT: Record<FaceShapeId, FaceShapeContent> = {
         "Las tres anchuras son similares, el largo se acerca al ancho y el rasgo dominante es el ángulo de la mandíbula, bien perceptible.",
       differentiators: [
         "Frente al redondo, la mandíbula es angular en lugar de redondeada.",
-        "Frente al alargado, no es notablemente más largo que ancho.",
-        "Frente al diamante, la frente es tan ancha como los pómulos, no estrecha.",
+        "Frente al alargado, el largo se acerca al ancho: el rostro es casi tan alto como amplio.",
+        "Frente al diamante, la frente acompaña a los pómulos en anchura y forma un marco recto de arriba abajo.",
       ],
     },
     balance: {
       principle:
         "El rostro cuadrado ya tiene ángulos de sobra, así que el balance por oposición aporta lo contrario: curvas. El objetivo es suavizar la fuerza de la mandíbula y añadir algo de redondez y altura sin negar su carácter.",
       techniques: [
-        "Suaviza con curvas, capas y ondas; las texturas redondeadas restan dureza a la línea recta de la mandíbula.",
-        "Evita cortes muy geométricos y líneas rectas que caen justo sobre la mandíbula: refuerzan el ángulo en lugar de disolverlo.",
-        "Prefiere escotes redondos y ovalados, que devuelven curva a la zona.",
-        "Elige gafas y pendientes de contorno redondeado; los marcos cuadrados duplican la angulosidad que ya tienes.",
+        "Ondas, capas suaves y mechones que caen por delante de la mandíbula rompen su línea recta con movimiento.",
+        "Mantén el pelo despejado en las sienes y con algo de altura arriba: aleja el peso de la esquina de la mandíbula.",
+        "En cejas, una curva suave en lugar de una línea recta compensa la angulosidad del rostro.",
+        "Si llevas barba, redondéala en el mentón en vez de dejarla en escuadra; los contornos rectos duplican el ángulo que ya tienes.",
+        "Elige monturas de esquinas redondeadas u ovaladas antes que marcos cuadrados.",
       ],
       goal: "Equilibrar la fuerza de la mandíbula con suavidad, sin perder la estructura que te caracteriza.",
     },
@@ -132,14 +135,14 @@ export const FACE_SHAPE_CONTENT: Record<FaceShapeId, FaceShapeContent> = {
     },
     balance: {
       principle:
-        "El peso visual está arriba: frente ancha y mandíbula estrecha. El balance por oposición busca lo contrario, dar anchura y presencia al tercio inferior y no añadir volumen a una frente que ya domina.",
+        "El peso visual está arriba: frente ancha y mandíbula estrecha. El balance por oposición hace lo contrario, baja el peso hacia el tercio inferior y, sobre todo, no suma nada a una frente que ya domina.",
       techniques: [
-        "Aporta volumen o anchura a la altura de la mandíbula, donde el rostro se estrecha.",
-        "Evita el volumen alto en la coronilla y los flequillos que ensanchan aún más la frente.",
-        "Prefiere escotes que amplían la parte baja —barco, cuadrado, halter— para compensar el mentón afinado.",
-        "Usa pendientes que terminan a la altura de la mandíbula y la ensanchan; en gafas, dales algo de presencia en la parte inferior.",
+        "Baja el peso del pelo: una media melena o un largo con cuerpo a la altura del mentón compensa la parte estrecha del rostro.",
+        "No cargues la parte alta: evita cardados en la coronilla y flequillos rectos y densos, que ensanchan la frente; un flequillo abierto en cortina la disimula mejor.",
+        "Si llevas barba, deja que rellene los laterales del maxilar para dar cuerpo justo donde el rostro se afina.",
+        "En cuellos y escotes, los que ganan cuerpo abajo —cuello vuelto, cowl, escote cuadrado amplio— acercan la anchura hacia el mentón; el halter, en cambio, lo estrecha.",
       ],
-      goal: "Repartir el peso visual hacia abajo para equilibrar una frente ancha con una mandíbula estrecha.",
+      goal: "Que la mirada deje de irse solo a la frente y el rostro se perciba parejo de arriba abajo.",
     },
   },
 
@@ -147,7 +150,7 @@ export const FACE_SHAPE_CONTENT: Record<FaceShapeId, FaceShapeContent> = {
     education: {
       tagline: "Pómulos protagonistas",
       essence:
-        "El rostro diamante tiene los pómulos como punto más ancho y prominente, con la frente y la mandíbula más estrechas y, a menudo, un mentón afinado. Es una forma angulosa y muy expresiva, con la anchura concentrada en el centro.",
+        "El rostro diamante tiene los pómulos como punto más ancho y prominente, con la frente y la mandíbula más estrechas. El mentón suele quedar en segundo plano, discreto frente al protagonismo del pómulo. Es una forma angulosa y muy expresiva, con la anchura concentrada en el centro.",
       proportions:
         "Los pómulos sobresalen sobre una frente y una mandíbula estrechas y de anchura parecida, y el rostro es más largo que ancho.",
       differentiators: [
@@ -160,12 +163,12 @@ export const FACE_SHAPE_CONTENT: Record<FaceShapeId, FaceShapeContent> = {
       principle:
         "Toda la anchura está en los pómulos, mientras frente y mandíbula quedan estrechas. El balance por oposición añade presencia donde falta —arriba y abajo— para que los pómulos dejen de dominar por sí solos.",
       techniques: [
-        "Da anchura a la frente con flequillos o volumen en la parte alta, y algo de cuerpo a la altura de la mandíbula.",
-        "Evita los recogidos muy tirantes, que marcan todavía más el pómulo al despejar las sienes.",
-        "Prefiere escotes que amplían la línea de los hombros y el tercio superior.",
-        "Elige pendientes anchos a la altura de la mandíbula y gafas con presencia en la parte superior —tipo ojo de gato— para ensanchar visualmente la frente.",
+        "Empieza por la frente, que aquí sí es estrecha: un flequillo o cuerpo a la altura de las sienes le da anchura —justo lo contrario que en el corazón, donde la frente ya sobra.",
+        "Nada de recogidos tirantes ni rayas centrales que despejan las sienes: dejan el pómulo aún más marcado.",
+        "Da presencia al maxilar inferior —con largo que caiga por debajo de la oreja o barba corta en los laterales— para que el pómulo no sea lo único ancho.",
+        "En monturas, las que tienen peso en la parte superior amplían visualmente la frente y compensan el centro del rostro.",
       ],
-      goal: "Equilibrar unos pómulos protagonistas dando presencia a la frente y a la mandíbula.",
+      goal: "Que los pómulos dejen de ser lo único que se ve y el rostro gane un marco parejo, con la frente y la mandíbula presentes.",
     },
   },
 
@@ -173,25 +176,25 @@ export const FACE_SHAPE_CONTENT: Record<FaceShapeId, FaceShapeContent> = {
     education: {
       tagline: "Vertical y estilizado",
       essence:
-        "El rostro alargado es visiblemente más largo que ancho, con los lados bastante rectos y anchuras de frente, pómulos y mandíbula parecidas. Suele tener la frente o el mentón largos y transmite elegancia y verticalidad.",
+        "El rostro alargado es visiblemente más largo que ancho, con los costados largos y de curvatura mínima y anchuras de frente, pómulos y mandíbula parecidas. Suele tener la frente o el mentón largos y transmite elegancia y verticalidad.",
       proportions:
         "El largo supera con claridad al ancho, la variación de anchura entre las tres zonas es pequeña y la dirección vertical domina todo el rostro.",
       differentiators: [
         "Frente al óvalo, el largo es marcado, no moderado.",
-        "Frente al cuadrado, comparte los lados rectos pero es mucho más largo.",
+        "Frente al cuadrado, comparte esos costados poco curvos pero es mucho más largo.",
         "Frente al diamante, la anchura es uniforme, sin unos pómulos que sobresalgan.",
       ],
     },
     balance: {
       principle:
-        "Lo que sobra es longitud y lo que falta es anchura. El balance por oposición introduce líneas horizontales y volumen lateral para contrarrestar la verticalidad y 'acortar' visualmente el rostro.",
+        "Lo que predomina es la longitud y lo que falta es anchura. El balance por oposición introduce líneas horizontales y volumen lateral para contrarrestar la verticalidad y 'acortar' visualmente el rostro.",
       techniques: [
-        "Añade volumen a los lados —ondas, capas a la altura de las mejillas— para ganar anchura.",
-        "Evita el pelo muy largo y liso y los cortes que estiran todavía más el rostro.",
-        "Un flequillo acorta el tercio superior y rompe la línea vertical de la frente.",
-        "Prefiere escotes horizontales —barco, cuadrado— y accesorios anchos o redondos antes que largos; en gafas, busca presencia horizontal.",
+        "Gana anchura donde falta: ondas y capas a la altura de las mejillas ensanchan el tercio medio.",
+        "Un flequillo —recto o abierto— acorta la frente, que suele ser la zona que más alarga el rostro.",
+        "Deja fuera el pelo muy largo y liso y las rayas al medio que caen a plomo: estiran todavía más la cara.",
+        "En cuellos, los altos y redondos o las líneas horizontales amplias cortan la vertical mejor que un escote profundo; en accesorios y monturas, busca presencia a lo ancho antes que a lo largo.",
       ],
-      goal: "Crear anchura y romper la línea vertical para que el rostro se perciba más corto y equilibrado.",
+      goal: "Que el rostro se perciba más corto y equilibrado, con la mirada repartida a lo ancho y no solo de arriba abajo.",
     },
   },
 };

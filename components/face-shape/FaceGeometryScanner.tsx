@@ -10,6 +10,10 @@ import { ConfidenceRanking } from "./ConfidenceRanking";
 import { MeasurementList } from "./MeasurementList";
 import { FaceMeasurementOverlay } from "./FaceMeasurementOverlay";
 import { ShapeEducation } from "./ShapeEducation";
+import { ShapeRecommendations } from "./ShapeRecommendations";
+import { StyleSimulator } from "./StyleSimulator";
+import { StyleComparison } from "./StyleComparison";
+import { ShapeFaq } from "./ShapeFaq";
 
 /**
  * Contenedor del Escáner de Geometría Facial.
@@ -54,6 +58,9 @@ export function FaceGeometryScanner({
 
   const { result } = state;
   const primaryLabel = FACE_SHAPE_LABELS[result.primary.shape];
+  // El simulador y la comparación necesitan el contorno detectado para dibujar
+  // la silueta; si faltara (foto difícil), se omiten en vez de romperse.
+  const contourAvailable = (result.contour?.length ?? 0) > 5;
 
   return (
     // presentation queda listo para adaptar recomendaciones (barba / aretes) en
@@ -130,6 +137,64 @@ export function FaceGeometryScanner({
 
       {/* Educación + balance por oposición */}
       <ShapeEducation shape={result.primary.shape} />
+
+      {/* Recomendaciones personalizadas */}
+      <section>
+        <span className="label-brand">Para tu forma</span>
+        <h3 className="mb-1 mt-2 font-serif text-2xl font-light text-ink">
+          Recomendaciones de estilo
+        </h3>
+        <p className="mb-4 text-sm leading-relaxed text-ink-soft">
+          Cada opción trae su porqué en clave de balance por oposición. Son criterios
+          orientativos, no reglas: tu gusto manda.
+        </p>
+        <ShapeRecommendations shape={result.primary.shape} presentation={presentation} />
+      </section>
+
+      {/* Simulador */}
+      {contourAvailable && (
+        <section>
+          <span className="label-brand">Sobre tu silueta</span>
+          <h3 className="mb-1 mt-2 font-serif text-2xl font-light text-ink">
+            Prueba diferentes estilos
+          </h3>
+          <p className="mb-4 text-sm leading-relaxed text-ink-soft">
+            Cambia peinado, gafas, escote y más sobre el contorno real de tu rostro.
+          </p>
+          <StyleSimulator
+            contour={result.contour}
+            measurements={result.measurements}
+            presentation={presentation}
+          />
+        </section>
+      )}
+
+      {/* Comparación */}
+      {contourAvailable && (
+        <section>
+          <span className="label-brand">Ver la diferencia</span>
+          <h3 className="mb-1 mt-2 font-serif text-2xl font-light text-ink">
+            ¿Y con un estilo poco recomendable?
+          </h3>
+          <p className="mb-4 text-sm leading-relaxed text-ink-soft">
+            La misma silueta con una opción que favorece y otra que desequilibra.
+          </p>
+          <StyleComparison
+            shape={result.primary.shape}
+            contour={result.contour}
+            measurements={result.measurements}
+          />
+        </section>
+      )}
+
+      {/* Preguntas frecuentes */}
+      <section>
+        <span className="label-brand">Dudas habituales</span>
+        <h3 className="mb-4 mt-2 font-serif text-2xl font-light text-ink">
+          Preguntas frecuentes
+        </h3>
+        <ShapeFaq shape={result.primary.shape} />
+      </section>
 
       <p className="rounded-2xl bg-blush-100 p-3 text-xs leading-relaxed text-ink-soft">
         Medición orientativa a partir de los puntos que MediaPipe detecta en tu rostro. El
