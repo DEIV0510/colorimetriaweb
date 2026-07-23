@@ -1,6 +1,6 @@
 import type { FaceShapeResult } from "@/types/face-shape";
 import { FACE_SHAPE_LABELS } from "@/types/face-shape";
-import { detectLandmarks, FaceShapeError } from "./detect-landmarks";
+import { detectLandmarks, faceContour, FaceShapeError } from "./detect-landmarks";
 import { measureFace } from "./measure-face";
 import { classifyShape } from "./classify-shape";
 
@@ -15,7 +15,8 @@ export { classifyShape } from "./classify-shape";
 export async function analyzeFaceShape(photoDataUrl: string): Promise<FaceShapeResult> {
   const { landmarks, width, height } = await detectLandmarks(photoDataUrl);
   const measurements = measureFace(landmarks, width, height);
-  return classifyShape(measurements, width, height);
+  const contour = faceContour(landmarks);
+  return classifyShape(measurements, width, height, contour);
 }
 
 /**

@@ -1,4 +1,6 @@
+import { FaceLandmarker } from "@mediapipe/tasks-vision";
 import type { LandmarkPoint } from "@/types/face";
+import type { NormalizedPoint } from "@/types/face-shape";
 import { getFaceLandmarker } from "@/lib/mediapipe/face-landmarker";
 import { loadImage } from "@/lib/image-processing/compress";
 
@@ -21,6 +23,34 @@ export interface DetectedLandmarks {
   landmarks: LandmarkPoint[];
   width: number;
   height: number;
+}
+
+/**
+ * Anillo ordenado del contorno facial (FACE_OVAL). Las conexiones de MediaPipe
+ * llegan como pares sueltos; aquí se enhebran en un único bucle cerrado, igual
+ * que en el recorte de la prueba virtual.
+ */
+function ovalRing(): number[] {
+  const connections = FaceLandmarker.FACE_LANDMARKS_FACE_OVAL;
+  const next = new Map(connections.map((c) => [c.start, c.end]));
+  const ring: number[] = [];
+  let current = connections[0].start;
+  const seen = new Set<number>();
+  while (!seen.has(current)) {
+    ring.push(current);
+    seen.add(current);
+    const following = next.get(current);
+    if (following === undefined) break;
+    current = following;
+  }
+  return ring;
+}
+
+const RING = ovalRing();
+
+/** Contorno facial en coordenadas normalizadas 0-1, para dibujar la silueta. */
+export function faceContour(landmarks: LandmarkPoint[]): NormalizedPoint[] {
+  return RING.map((i) => ({ x: landmarks[i].x, y: landmarks[i].y }));
 }
 
 export async function detectLandmarks(photoDataUrl: string): Promise<DetectedLandmarks> {

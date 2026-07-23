@@ -3,6 +3,7 @@ import type {
   FaceShapeId,
   FaceShapeResult,
   FaceShapeScore,
+  NormalizedPoint,
 } from "@/types/face-shape";
 import { FACE_SHAPE_IDS } from "@/types/face-shape";
 
@@ -79,7 +80,8 @@ function scoreFor(profile: ShapeProfile, f: number[]): number {
 export function classifyShape(
   measurements: FaceMeasurements,
   imageWidth: number,
-  imageHeight: number
+  imageHeight: number,
+  contour: NormalizedPoint[] = []
 ): FaceShapeResult {
   const f = featureVector(measurements);
 
@@ -105,6 +107,7 @@ export function classifyShape(
     ranking,
     measurements,
     factors: buildFactors(measurements),
+    contour,
     imageWidth,
     imageHeight,
   };

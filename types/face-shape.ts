@@ -102,6 +102,11 @@ export interface FaceShapeResult {
    * proporciones reales de ESTE rostro (no plantillas por forma).
    */
   factors: string[];
+  /**
+   * Contorno facial detectado (anillo FACE_OVAL), normalizado 0-1, para trazar
+   * la silueta real sobre la selfie. Vacío si no se calculó (p. ej. en tests).
+   */
+  contour: NormalizedPoint[];
   /** Dimensiones de la foto de trabajo, para escalar la visualización */
   imageWidth: number;
   imageHeight: number;

@@ -8,6 +8,8 @@ import { summarizeDiagnosis } from "@/lib/face-shape";
 import { Card } from "@/components/ui/Card";
 import { ConfidenceRanking } from "./ConfidenceRanking";
 import { MeasurementList } from "./MeasurementList";
+import { FaceMeasurementOverlay } from "./FaceMeasurementOverlay";
+import { ShapeEducation } from "./ShapeEducation";
 
 /**
  * Contenedor del Escáner de Geometría Facial.
@@ -75,6 +77,17 @@ export function FaceGeometryScanner({
         </p>
       </section>
 
+      {/* Visualización sobre la selfie */}
+      {photoDataUrl && (
+        <section>
+          <span className="label-brand">Sobre tu selfie</span>
+          <h3 className="mb-4 mt-2 font-serif text-xl font-light text-ink">
+            Así medimos tu rostro
+          </h3>
+          <FaceMeasurementOverlay photoDataUrl={photoDataUrl} result={result} />
+        </section>
+      )}
+
       {/* Segunda y tercera posibilidad */}
       <section>
         <span className="label-brand">Nivel de confianza</span>
@@ -114,6 +127,9 @@ export function FaceGeometryScanner({
           ))}
         </ul>
       </section>
+
+      {/* Educación + balance por oposición */}
+      <ShapeEducation shape={result.primary.shape} />
 
       <p className="rounded-2xl bg-blush-100 p-3 text-xs leading-relaxed text-ink-soft">
         Medición orientativa a partir de los puntos que MediaPipe detecta en tu rostro. El
