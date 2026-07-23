@@ -36,34 +36,32 @@ export async function runAnalysisPipeline(
 ): Promise<PipelineResult> {
   onPhase("calidad");
   onPhase("rostro");
-  const { quality, validation, imageData } = await checkPhotoQuality(photoDataUrl);
+  const { quality, primaryLandmarks, imageData } = await checkPhotoQuality(photoDataUrl);
 
-  if (validation.faceCount === 0) {
+  // Único bloqueo real: sin rostro no hay nada que medir. Si hay más de una cara
+  // se analiza la principal (la más grande), y una calidad no óptima no detiene
+  // el análisis: solo baja la confianza del resultado.
+  if (!primaryLandmarks) {
     throw new PipelineError(
       "No pudimos detectar un rostro en la fotografía. Intenta repetir la selfie con mejor luz y de frente.",
       "rostro"
     );
   }
-  if (validation.faceCount > 1) {
-    throw new PipelineError(
-      "Detectamos más de una persona en la fotografía. Repite la selfie tú solo/a.",
-      "rostro"
-    );
-  }
-  if (!validation.landmarks || !quality) {
-    throw new PipelineError("No se pudieron obtener los puntos faciales.", "rostro");
-  }
 
-  if (!quality.passed) {
-    throw new PipelineError(
-      quality.warnings[0] ??
-        "La calidad de la fotografía es insuficiente para un análisis confiable.",
-      "calidad"
-    );
-  }
+  // Con rostro presente, la calidad siempre se calcula; este respaldo solo cubre
+  // el caso teórico de que falte, para no volver a bloquear el análisis.
+  const safeQuality: ImageQualityResult = quality ?? {
+    brightnessScore: 0.5,
+    sharpnessScore: 0.5,
+    exposureScore: 0.5,
+    symmetryLightingScore: 1,
+    overallQuality: "aceptable",
+    warnings: [],
+    passed: true,
+  };
 
   onPhase("color");
-  const skinColor = extractSkinColor(imageData, validation.landmarks);
+  const skinColor = extractSkinColor(imageData, primaryLandmarks);
   if (skinColor.regions.length === 0) {
     throw new PipelineError(
       "No se pudo extraer el color de la piel con suficiente confianza. Intenta con mejor iluminación.",
@@ -79,7 +77,7 @@ export async function runAnalysisPipeline(
   const classification = classifySeason({
     skinColor,
     answers,
-    imageQuality: quality.overallQuality,
+    imageQuality: safeQuality.overallQuality,
     answeredQuestionCount,
     totalQuestionCount,
   });
@@ -87,5 +85,5 @@ export async function runAnalysisPipeline(
   onPhase("paleta");
   await new Promise((resolve) => setTimeout(resolve, 400));
 
-  return { quality, skinColor, classification };
+  return { quality: safeQuality, skinColor, classification };
 }

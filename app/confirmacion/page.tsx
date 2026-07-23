@@ -39,10 +39,12 @@ export default function ConfirmacionPage() {
 
     let cancelled = false;
     checkPhotoQuality(photoDataUrl)
-      .then(({ quality: q, validation }) => {
+      .then(({ quality: q, primaryLandmarks }) => {
         if (cancelled) return;
         setQuality(q);
-        setFaceOk(validation.faceCount === 1);
+        // Basta con que se detecte el rostro principal: un rostro de fondo ya no
+        // invalida la selfie, y se analiza siempre a la persona más grande.
+        setFaceOk(primaryLandmarks !== null);
         setPhotoQuality(q);
       })
       .catch(() => {
@@ -65,16 +67,22 @@ export default function ConfirmacionPage() {
   const scoreAtLeast = (value: number | undefined, min: number) =>
     typeof value === "number" && Number.isFinite(value) && value >= min;
 
-  const sharpOk = scoreAtLeast(quality?.sharpnessScore, 0.25);
-  const lightingOk = scoreAtLeast(quality?.symmetryLightingScore, 0.55);
-  const canUse = !checking && !checkFailed && faceOk && quality?.passed === true;
+  const sharpOk = scoreAtLeast(quality?.sharpnessScore, 0.12);
+  const lightingOk = scoreAtLeast(quality?.symmetryLightingScore, 0.42);
+  // Solo se exige que haya un rostro detectable. La nitidez y la luz son avisos
+  // orientativos, no un candado: una buena selfie no debe quedar bloqueada por un
+  // umbral demasiado estricto. Si algo falla de verdad, las advertencias lo dicen.
+  const canUse = !checking && !checkFailed && faceOk;
 
+  // "required" solo el rostro: es lo único imprescindible para analizar. El resto
+  // son sugerencias, así que si fallan no se pintan como error, sino como aviso.
   const checklist = [
-    { label: "Rostro despejado y detectado", ok: faceOk },
-    { label: "Sin maquillaje ni filtros (confirmado por ti)", ok: noMakeupConfirmed },
-    { label: "Iluminación uniforme", ok: lightingOk },
-    { label: "Imagen nítida", ok: sharpOk },
+    { label: "Rostro despejado y detectado", ok: faceOk, required: true },
+    { label: "Sin maquillaje ni filtros (confirmado por ti)", ok: noMakeupConfirmed, required: false },
+    { label: "Iluminación uniforme", ok: lightingOk, required: false },
+    { label: "Imagen nítida", ok: sharpOk, required: false },
   ];
+  const hasSuggestions = !checking && !checkFailed && canUse && checklist.some((i) => !i.ok);
 
   return (
     <PageShell>
@@ -102,19 +110,32 @@ export default function ConfirmacionPage() {
         )}
         {!checking &&
           !checkFailed &&
-          checklist.map((item) => (
-            <div key={item.label} className="flex items-center gap-2 text-sm">
-              {item.ok ? (
-                <Check size={16} className="text-emerald-600" aria-hidden="true" />
-              ) : (
-                <X size={16} className="text-brand-700" aria-hidden="true" />
-              )}
-              {/* El icono es aria-hidden y el color no llega al lector de
-                  pantalla: sin este texto, ✓ y ✗ suenan exactamente igual. */}
-              <span className="sr-only">{item.ok ? "Correcto:" : "Pendiente:"}</span>
-              <span className={item.ok ? "text-ink-soft" : "text-brand-700"}>{item.label}</span>
-            </div>
-          ))}
+          checklist.map((item) => {
+            // Fallo del rostro = bloqueante (rojo). Fallo de una sugerencia =
+            // aviso suave (ámbar), porque igual se puede continuar.
+            const failTone = item.required ? "text-brand-700" : "text-amber-600";
+            return (
+              <div key={item.label} className="flex items-center gap-2 text-sm">
+                {item.ok ? (
+                  <Check size={16} className="text-emerald-600" aria-hidden="true" />
+                ) : (
+                  <X size={16} className={failTone} aria-hidden="true" />
+                )}
+                {/* El icono es aria-hidden y el color no llega al lector de
+                    pantalla: sin este texto, ✓ y ✗ suenan exactamente igual. */}
+                <span className="sr-only">
+                  {item.ok ? "Correcto:" : item.required ? "Falta:" : "Sugerencia:"}
+                </span>
+                <span className={item.ok ? "text-ink-soft" : failTone}>{item.label}</span>
+              </div>
+            );
+          })}
+        {hasSuggestions && (
+          <p className="mt-1 text-xs leading-relaxed text-ink-muted">
+            Puedes continuar: los avisos de luz y nitidez son sugerencias para un
+            resultado más fino, no un requisito.
+          </p>
+        )}
         {!checking && quality && quality.warnings.length > 0 && (
           <ul className="mt-2 list-inside list-disc rounded-xl bg-blush-100 p-3 text-sm text-ink-soft">
             {quality.warnings.map((w) => (

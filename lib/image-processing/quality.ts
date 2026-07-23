@@ -67,8 +67,10 @@ export function calculateSharpness(data: ImageData): number {
 
   const mean = sum / count;
   const variance = sumSq / count - mean * mean;
-  // Normaliza a 0-1 con un techo empírico razonable para selfies de celular.
-  return Math.min(1, Math.round((variance / 900) * 100) / 100);
+  // Normaliza a 0-1. El techo se calcula sobre TODA la imagen (piel y fondo
+  // lisos incluidos), que baja la varianza media de una selfie perfectamente
+  // enfocada, así que se usa un techo realista para no penalizar fotos nítidas.
+  return Math.min(1, Math.round((variance / 500) * 100) / 100);
 }
 
 // Recorta los bounds a indices de pixel enteros dentro de la imagen. Indexar
@@ -111,7 +113,9 @@ export function compareFaceSides(data: ImageData, rawBounds: PixelBounds): numbe
   const leftMean = leftSum / leftCount;
   const rightMean = rightSum / rightCount;
   const diff = Math.abs(leftMean - rightMean) / 255;
-  return Math.max(0, Math.round((1 - diff * 3) * 100) / 100);
+  // La luz natural (una ventana a un lado) crea siempre algo de asimetría; el
+  // multiplicador es suave para no leer eso como "media cara en sombra".
+  return Math.max(0, Math.round((1 - diff * 2) * 100) / 100);
 }
 
 export function detectStrongShadows(data: ImageData, rawBounds: PixelBounds): boolean {
@@ -139,7 +143,9 @@ export function detectStrongShadows(data: ImageData, rawBounds: PixelBounds): bo
   if (blockMeans.length < 2) return false;
   const min = Math.min(...blockMeans);
   const max = Math.max(...blockMeans);
-  return max - min > 110;
+  // Un rostro con relieve tiene variación natural entre zonas; solo se marca
+  // cuando el contraste entre bloques es realmente fuerte.
+  return max - min > 145;
 }
 
 const MIN_RESOLUTION = 480;
@@ -171,10 +177,10 @@ export function validateImageQuality(
   if (brightRatio > 0.1) {
     warnings.push("Hay zonas sobreexpuestas. Evita tener una ventana o luz fuerte detrás.");
   }
-  if (sharpnessScore < 0.25) {
+  if (sharpnessScore < 0.12) {
     warnings.push("La imagen no está nítida. Limpia la cámara y mantén el celular quieto.");
   }
-  if (symmetryLightingScore < 0.55) {
+  if (symmetryLightingScore < 0.42) {
     warnings.push("La luz debe llegar de frente. Evita sombras sobre un lado del rostro.");
   }
   if (hasStrongShadows) {
@@ -205,9 +211,12 @@ export function validateImageQuality(
     };
   }
 
+  // La calidad la decide la puntuación media, no el número de avisos: una selfie
+  // con un par de sugerencias menores no es "insuficiente". Los avisos informan;
+  // ya no bloquean el análisis (ver run-analysis.ts y la pantalla de confirmación).
   let overallQuality: QualityLevel = "buena";
-  if (scoreAverage < 0.45 || warnings.length >= 3) overallQuality = "insuficiente";
-  else if (scoreAverage < 0.7 || warnings.length >= 1) overallQuality = "aceptable";
+  if (scoreAverage < 0.4) overallQuality = "insuficiente";
+  else if (scoreAverage < 0.62) overallQuality = "aceptable";
 
   return {
     brightnessScore,
