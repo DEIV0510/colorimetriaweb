@@ -12,6 +12,7 @@ import {
   Heart,
   Palette,
   RotateCcw,
+  ScanFace,
   Shirt,
   Smile,
   Sparkles,
@@ -29,6 +30,7 @@ import { OutfitCard } from "@/components/results/OutfitCard";
 import { SaveToAccount } from "@/components/results/SaveToAccount";
 import { StylePreferencesPanel } from "@/components/results/StylePreferencesPanel";
 import { VirtualDrapingViewer } from "@/components/virtual-draping/VirtualDrapingViewer";
+import { FaceGeometryScanner } from "@/components/face-shape/FaceGeometryScanner";
 import { FavoriteButton } from "@/components/results/FavoriteButton";
 import { useAnalysisStore } from "@/lib/store/analysis-store";
 import { useFavoritesStore } from "@/lib/store/favorites-store";
@@ -52,6 +54,7 @@ const TABS = [
   { id: "resultado", label: "Tu resultado", icon: Sparkles },
   { id: "paleta", label: "Tu paleta", icon: Palette },
   { id: "probar", label: "Prueba tus colores", icon: Wand2 },
+  { id: "geometria", label: "Geometría facial", icon: ScanFace },
   { id: "outfits", label: "Tus outfits", icon: Shirt },
   { id: "joyas", label: "Joyas", icon: Gem },
   { id: "rostro", label: "Cerca del rostro", icon: Smile },
@@ -293,6 +296,25 @@ export default function ResultadoPage() {
           seasonId={classification.primary.seasonId}
           secondarySeasonId={classification.secondary.seasonId}
           features={classification.features}
+        />
+      </TabPanel>
+
+      {/* GEOMETRÍA FACIAL */}
+      <TabPanel id="geometria" activeId={activeTab}>
+        <section className="mb-5">
+          <span className="label-brand">Análisis de proporciones</span>
+          <h2 className="mb-2 mt-2 font-serif text-2xl font-light text-ink">
+            Escáner de geometría facial
+          </h2>
+          <p className="text-sm leading-relaxed text-ink-soft">
+            Medimos la forma de tu rostro sobre los puntos que detecta tu propia selfie, para
+            afinar cortes, gafas, escotes y accesorios que equilibran tus proporciones.
+          </p>
+        </section>
+
+        <FaceGeometryScanner
+          photoDataUrl={photoDataUrl}
+          presentation={preferences.presentation ?? "neutral"}
         />
       </TabPanel>
 
