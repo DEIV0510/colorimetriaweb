@@ -6,6 +6,7 @@ import {
   AlertTriangle,
   Brush,
   ChevronDown,
+  ChevronRight,
   Download,
   Gem,
   Glasses,
@@ -31,6 +32,9 @@ import { SaveToAccount } from "@/components/results/SaveToAccount";
 import { StylePreferencesPanel } from "@/components/results/StylePreferencesPanel";
 import { VirtualDrapingViewer } from "@/components/virtual-draping/VirtualDrapingViewer";
 import { FaceGeometryScanner } from "@/components/face-shape/FaceGeometryScanner";
+import { IdealShapeSilhouette } from "@/components/face-shape/IdealShapeSilhouette";
+import { useFaceShape } from "@/lib/face-shape/use-face-shape";
+import { FACE_SHAPE_LABELS } from "@/types/face-shape";
 import { FavoriteButton } from "@/components/results/FavoriteButton";
 import { useAnalysisStore } from "@/lib/store/analysis-store";
 import { useFavoritesStore } from "@/lib/store/favorites-store";
@@ -82,6 +86,9 @@ export default function ResultadoPage() {
 
   const hydrated = useHasHydrated();
   const { activeTab, setTab } = useTabHash<TabId>(TAB_IDS, "resultado");
+  // La forma de rostro se calcula desde ya para poder mostrarla como SEGUNDO
+  // resultado en la portada, junto a la estación de color.
+  const faceShape = useFaceShape(photoDataUrl);
   const [showDetails, setShowDetails] = useState(false);
   const [includeSelfie, setIncludeSelfie] = useState(false);
   const [userName, setUserName] = useState("");
@@ -150,6 +157,37 @@ export default function ResultadoPage() {
             Segunda estación más cercana:{" "}
             <strong className="font-medium text-brand-700">{secondary.name}</strong>
           </p>
+
+          {/* SEGUNDO resultado: la forma del rostro, como titular propio */}
+          {faceShape.status === "ready" && (
+            <button
+              type="button"
+              onClick={() => setTab("geometria")}
+              className="mx-auto mt-6 flex w-full max-w-sm items-center gap-3 rounded-[1.5rem] border border-line bg-white/80 p-3 text-left shadow-card backdrop-blur-sm transition-colors hover:border-brand-500 focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-500 focus-visible:ring-offset-2 focus-visible:ring-offset-blush"
+            >
+              <IdealShapeSilhouette
+                shape={faceShape.result.primary.shape}
+                showGuides={false}
+                className="h-14 w-auto shrink-0"
+                title={`Silueta de un rostro ${FACE_SHAPE_LABELS[faceShape.result.primary.shape].toLowerCase()}`}
+              />
+              <span className="min-w-0 flex-1">
+                <span className="label-brand text-[9px]">Y tu forma de rostro</span>
+                <span className="mt-0.5 block font-serif text-2xl font-light leading-none text-ink">
+                  {FACE_SHAPE_LABELS[faceShape.result.primary.shape]}
+                </span>
+                <span className="mt-1 block text-xs text-ink-muted">
+                  {faceShape.result.primary.percentage}% de coincidencia · Ver geometría facial
+                </span>
+              </span>
+              <ChevronRight size={20} className="shrink-0 text-brand-600" aria-hidden="true" />
+            </button>
+          )}
+          {faceShape.status === "loading" && (
+            <p className="mt-5 text-xs text-ink-muted" role="status">
+              Analizando la forma de tu rostro…
+            </p>
+          )}
         </div>
       </section>
 

@@ -1,5 +1,5 @@
 import {
-  getFaceLandmarker,
+  getStillFaceLandmarker,
   evaluateFaceResult,
   toCaptureValidation,
 } from "@/lib/mediapipe/face-landmarker";
@@ -52,24 +52,20 @@ export async function checkPhotoQuality(photoDataUrl: string): Promise<PhotoChec
   const canvas = drawToCanvas(img, img.naturalWidth, img.naturalHeight);
   const imageData = dataUrlToImageData(canvas);
 
-  const landmarker = await getFaceLandmarker();
+  // Modo IMAGE: detección de una sola pasada, sin marcas de tiempo, fiable para
+  // fotos fijas.
+  const landmarker = await getStillFaceLandmarker();
+  const detection = landmarker.detect(canvas);
+  const faces: LandmarkPoint[][] = (detection.faceLandmarks ?? []).map((f) =>
+    f.map((p) => ({ x: p.x, y: p.y, z: p.z }))
+  );
 
-  // MediaPipe en modo VÍDEO puede devolver vacío en el PRIMER cuadro de una
-  // imagen fija; un par de reintentos con marca de tiempo creciente lo estabiliza.
-  let faces: LandmarkPoint[][] = [];
-  for (let attempt = 0; attempt < 3 && faces.length === 0; attempt++) {
-    const detection = landmarker.detectForVideo(canvas, performance.now());
-    faces = (detection.faceLandmarks ?? []).map((f) =>
-      f.map((p) => ({ x: p.x, y: p.y, z: p.z }))
-    );
-    if (faces.length > 0) {
-      // Se conserva la validación (orientación/encuadre) del mismo resultado.
-      const validation = toCaptureValidation(evaluateFaceResult(detection));
-      return finish(faces, validation, imageData, canvas);
-    }
+  if (faces.length > 0) {
+    const validation = toCaptureValidation(evaluateFaceResult(detection));
+    return finish(faces, validation, imageData, canvas);
   }
 
-  // Sin rostro tras los reintentos.
+  // Sin rostro.
   return {
     quality: null,
     validation: {

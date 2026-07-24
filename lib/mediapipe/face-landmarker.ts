@@ -13,15 +13,30 @@ import type {
 import { FACE_REFERENCE_POINTS } from "./landmark-regions";
 
 let landmarkerPromise: Promise<FaceLandmarker> | null = null;
+let stillLandmarkerPromise: Promise<FaceLandmarker> | null = null;
 
+/** Detector en modo VÍDEO, para la guía en vivo de la cámara. */
 export function getFaceLandmarker(): Promise<FaceLandmarker> {
   if (!landmarkerPromise) {
-    landmarkerPromise = createLandmarker();
+    landmarkerPromise = createLandmarker("VIDEO");
   }
   return landmarkerPromise;
 }
 
-async function createLandmarker(): Promise<FaceLandmarker> {
+/**
+ * Detector en modo IMAGE, para fotos fijas (confirmación y análisis). Es más
+ * fiable que reutilizar el de vídeo: no depende de marcas de tiempo ni sufre el
+ * "primer cuadro vacío", que hacía fallar la detección en imágenes perfectamente
+ * válidas.
+ */
+export function getStillFaceLandmarker(): Promise<FaceLandmarker> {
+  if (!stillLandmarkerPromise) {
+    stillLandmarkerPromise = createLandmarker("IMAGE");
+  }
+  return stillLandmarkerPromise;
+}
+
+async function createLandmarker(mode: "VIDEO" | "IMAGE"): Promise<FaceLandmarker> {
   // La ruta lleva la versión del paquete (la inyecta next.config.ts leyendo el
   // package.json instalado), para poder cachear los ~11 MB de forma permanente
   // sin arriesgar que un bump sirva binarios viejos contra un bundle nuevo.
@@ -38,7 +53,7 @@ async function createLandmarker(): Promise<FaceLandmarker> {
         modelAssetPath: "/models/face_landmarker.task",
         delegate,
       },
-      runningMode: "VIDEO" as const,
+      runningMode: mode,
       numFaces: 2,
       outputFacialTransformationMatrixes: true,
       outputFaceBlendshapes: false,

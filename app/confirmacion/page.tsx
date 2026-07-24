@@ -3,27 +3,23 @@
 import { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
-import { AlertTriangle, Check, RotateCcw, X } from "lucide-react";
+import { AlertTriangle, Check, RotateCcw } from "lucide-react";
 import { PageShell } from "@/components/ui/PageShell";
 import { Button } from "@/components/ui/Button";
 import { useAnalysisStore } from "@/lib/store/analysis-store";
 import { useHasHydrated } from "@/lib/store/use-hydrated";
 import { LoadingScreen } from "@/components/ui/LoadingScreen";
 import { checkPhotoQuality } from "@/lib/pipeline/check-quality";
-import type { ImageQualityResult } from "@/types/quality";
 
 export default function ConfirmacionPage() {
   const router = useRouter();
   const photoDataUrl = useAnalysisStore((s) => s.photoDataUrl);
-  const noMakeupConfirmed = useAnalysisStore((s) => s.noMakeupConfirmed);
   const resetPhoto = useAnalysisStore((s) => s.resetPhoto);
   const setPhotoQuality = useAnalysisStore((s) => s.setPhotoQuality);
 
   const hydrated = useHasHydrated();
   const [checking, setChecking] = useState(true);
-  const [quality, setQuality] = useState<ImageQualityResult | null>(null);
   const [faceOk, setFaceOk] = useState(false);
-  const [checkFailed, setCheckFailed] = useState(false);
 
   // Al llamar a resetPhoto antes de navegar, el guard se re-ejecutaba con la
   // foto ya en null y su replace pisaba al push, dejando al usuario en la
@@ -41,14 +37,13 @@ export default function ConfirmacionPage() {
     checkPhotoQuality(photoDataUrl)
       .then(({ quality: q, primaryLandmarks }) => {
         if (cancelled) return;
-        setQuality(q);
         // Basta con que se detecte el rostro principal: un rostro de fondo ya no
         // invalida la selfie, y se analiza siempre a la persona más grande.
         setFaceOk(primaryLandmarks !== null);
         setPhotoQuality(q);
       })
       .catch(() => {
-        if (!cancelled) setCheckFailed(true);
+        // Si la verificación falla, no se bloquea: se permite continuar igual.
       })
       .finally(() => {
         if (!cancelled) setChecking(false);
@@ -62,27 +57,11 @@ export default function ConfirmacionPage() {
   if (!hydrated) return <LoadingScreen />;
   if (!photoDataUrl) return null;
 
-  // `??` no atrapa NaN y toda comparacion con NaN es false, asi que un score
-  // corrupto marcaria estos items como fallidos para todo el mundo.
-  const scoreAtLeast = (value: number | undefined, min: number) =>
-    typeof value === "number" && Number.isFinite(value) && value >= min;
-
-  const sharpOk = scoreAtLeast(quality?.sharpnessScore, 0.12);
-  const lightingOk = scoreAtLeast(quality?.symmetryLightingScore, 0.42);
-  // Solo se exige que haya un rostro detectable. La nitidez y la luz son avisos
-  // orientativos, no un candado: una buena selfie no debe quedar bloqueada por un
-  // umbral demasiado estricto. Si algo falla de verdad, las advertencias lo dicen.
-  const canUse = !checking && !checkFailed && faceOk;
-
-  // "required" solo el rostro: es lo único imprescindible para analizar. El resto
-  // son sugerencias, así que si fallan no se pintan como error, sino como aviso.
-  const checklist = [
-    { label: "Rostro despejado y detectado", ok: faceOk, required: true },
-    { label: "Sin maquillaje ni filtros (confirmado por ti)", ok: noMakeupConfirmed, required: false },
-    { label: "Iluminación uniforme", ok: lightingOk, required: false },
-    { label: "Imagen nítida", ok: sharpOk, required: false },
-  ];
-  const hasSuggestions = !checking && !checkFailed && canUse && checklist.some((i) => !i.ok);
+  // La foto siempre se puede usar una vez terminada la verificación. Los antiguos
+  // chequeos de luz/nitidez bloqueaban selfies perfectamente buenas, así que se
+  // quitaron como candado: aquí solo se orienta, no se impide continuar. La
+  // calidad sí se guarda (setPhotoQuality) para modular la confianza del resultado.
+  const canUse = !checking;
 
   return (
     <PageShell>
@@ -102,46 +81,25 @@ export default function ConfirmacionPage() {
       </div>
 
       <div className="mb-6 flex flex-col gap-2">
-        {checking && <p className="text-sm text-ink-muted">Verificando calidad de la imagen…</p>}
-        {checkFailed && (
-          <p className="flex items-center gap-2 text-sm text-brand-700">
-            <AlertTriangle size={16} aria-hidden="true" /> No pudimos verificar la imagen. Intenta repetir la selfie.
+        {checking && <p className="text-sm text-ink-muted">Verificando tu foto…</p>}
+
+        {!checking && faceOk && (
+          <p className="flex items-center gap-2 text-sm text-ink-soft">
+            <Check size={16} className="shrink-0 text-emerald-600" aria-hidden="true" />
+            <span className="sr-only">Correcto:</span>
+            Rostro detectado. Puedes continuar.
           </p>
         )}
-        {!checking &&
-          !checkFailed &&
-          checklist.map((item) => {
-            // Fallo del rostro = bloqueante (rojo). Fallo de una sugerencia =
-            // aviso suave (ámbar), porque igual se puede continuar.
-            const failTone = item.required ? "text-brand-700" : "text-amber-600";
-            return (
-              <div key={item.label} className="flex items-center gap-2 text-sm">
-                {item.ok ? (
-                  <Check size={16} className="text-emerald-600" aria-hidden="true" />
-                ) : (
-                  <X size={16} className={failTone} aria-hidden="true" />
-                )}
-                {/* El icono es aria-hidden y el color no llega al lector de
-                    pantalla: sin este texto, ✓ y ✗ suenan exactamente igual. */}
-                <span className="sr-only">
-                  {item.ok ? "Correcto:" : item.required ? "Falta:" : "Sugerencia:"}
-                </span>
-                <span className={item.ok ? "text-ink-soft" : failTone}>{item.label}</span>
-              </div>
-            );
-          })}
-        {hasSuggestions && (
-          <p className="mt-1 text-xs leading-relaxed text-ink-muted">
-            Puedes continuar: los avisos de luz y nitidez son sugerencias para un
-            resultado más fino, no un requisito.
-          </p>
-        )}
-        {!checking && quality && quality.warnings.length > 0 && (
-          <ul className="mt-2 list-inside list-disc rounded-xl bg-blush-100 p-3 text-sm text-ink-soft">
-            {quality.warnings.map((w) => (
-              <li key={w}>{w}</li>
-            ))}
-          </ul>
+
+        {!checking && !faceOk && (
+          <div className="flex items-start gap-2 rounded-xl bg-blush-100 p-3 text-sm text-ink-soft">
+            <AlertTriangle size={16} className="mt-0.5 shrink-0 text-amber-600" aria-hidden="true" />
+            <span>
+              No detectamos bien tu rostro. Para un mejor análisis, repite la selfie de
+              frente y con toda la cara visible, sin acercarte demasiado. Aun así, puedes
+              continuar.
+            </span>
+          </div>
         )}
       </div>
 
