@@ -1,6 +1,7 @@
 import { jsPDF } from "jspdf";
 import type { ClassificationResult } from "@/types/classification";
 import type { SeasonProfile } from "@/types/classification";
+import { SITE_URL } from "@/lib/site";
 
 const FEATURE_LABELS = {
   temperature: { calida: "Cálida", fria: "Fría", neutral: "Neutral", oliva: "Oliva" },
@@ -74,17 +75,21 @@ export function buildReportPdf(
     y += 2;
   };
 
-  // Encabezado
+  // Encabezado con la marca: el informe circula suelto (WhatsApp, impreso).
   doc.setFont("helvetica", "bold");
   doc.setFontSize(20);
-  doc.setTextColor(46, 32, 25);
-  doc.text("ColorIA", MARGIN, y);
+  doc.setTextColor(174, 21, 101);
+  doc.text("Alma e Imagen · The Academy", MARGIN, y);
   y += 7;
   doc.setFont("helvetica", "normal");
   doc.setFontSize(10);
   doc.setTextColor(107, 93, 83);
   doc.text("Informe de colorimetría personal (estimación orientativa)", MARGIN, y);
-  y += 8;
+  y += 4;
+  doc.setDrawColor(214, 32, 126);
+  doc.setLineWidth(0.4);
+  doc.line(MARGIN, y, PAGE_WIDTH - MARGIN, y);
+  y += 7;
 
   if (options.userName) {
     paragraph(`Nombre: ${options.userName}`);
@@ -153,6 +158,18 @@ export function buildReportPdf(
     classification.warnings.forEach((w) => paragraph(`• ${w}`));
   }
 
+  // Pie en cada página, por debajo del margen que usa el contenido.
+  const pages = doc.getNumberOfPages();
+  const host = SITE_URL.replace(/^https?:\/\//, "");
+  for (let page = 1; page <= pages; page++) {
+    doc.setPage(page);
+    doc.setFont("helvetica", "normal");
+    doc.setFontSize(8);
+    doc.setTextColor(126, 102, 114);
+    doc.text(`Alma e Imagen · The Academy  ·  ${host}`, MARGIN, PAGE_HEIGHT - 9);
+    doc.text(`${page} / ${pages}`, PAGE_WIDTH - MARGIN, PAGE_HEIGHT - 9, { align: "right" });
+  }
+
   return doc;
 }
 
@@ -163,5 +180,5 @@ export function generateReportPdf(
   options: ReportOptions
 ): void {
   const doc = buildReportPdf(classification, season, secondarySeason, options);
-  doc.save(`coloria-informe-${season.id}.pdf`);
+  doc.save(`alma-e-imagen-colorimetria-${season.id}.pdf`);
 }

@@ -3,8 +3,8 @@ import { PageShell } from "@/components/ui/PageShell";
 import { LegalSection } from "@/components/ui/LegalSection";
 
 export const metadata: Metadata = {
-  title: "Términos — ColorIA",
-  description: "Términos y condiciones de uso de ColorIA.",
+  title: "Términos · Colorimetría · Alma e Imagen",
+  description: "Términos y condiciones de uso de la herramienta de colorimetría de Alma e Imagen.",
 };
 
 export default function TerminosPage() {
@@ -14,12 +14,12 @@ export default function TerminosPage() {
         Términos y condiciones
       </h1>
       <p className="mb-8 text-sm text-ink-muted">
-        Al usar ColorIA aceptas las condiciones descritas a continuación.
+        Al usar la herramienta de colorimetría de Alma e Imagen aceptas las condiciones descritas a continuación.
       </p>
 
       <LegalSection title="Naturaleza del servicio">
         <p>
-          ColorIA ofrece una estimación orientativa de colorimetría personal a partir de
+          La herramienta ofrece una estimación orientativa de colorimetría personal a partir de
           una fotografía y un cuestionario. No es un diagnóstico, no es un servicio
           médico ni de salud, y no sustituye la asesoría de un profesional de imagen.
         </p>

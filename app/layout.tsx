@@ -4,6 +4,7 @@ import Header from "@/components/layout/Header";
 import Footer from "@/components/layout/Footer";
 import { PwaSetup } from "@/components/layout/PwaSetup";
 import { ScrollReveal } from "@/components/layout/ScrollReveal";
+import { SITE_URL } from "@/lib/site";
 import "./globals.css";
 
 // Mismas familias tipográficas que Alma e Imagen · The Academy.
@@ -28,17 +29,35 @@ const sacramento = Sacramento({
   display: "swap",
 });
 
+const SHARE_DESCRIPTION =
+  "Descubre los colores que armonizan contigo: tu estación, tu paleta y cómo llevarla. Con una selfie que se procesa en tu propio dispositivo.";
+
+// El favicon, el ícono de Apple y la imagen para compartir salen de los
+// archivos app/favicon.ico, app/icon.png, app/apple-icon.png y
+// app/opengraph-image.jpg. metadataBase vuelve absolutas sus URLs, que es lo
+// que exigen WhatsApp y Facebook para mostrar la vista previa.
 export const metadata: Metadata = {
+  metadataBase: new URL(SITE_URL),
   title: "Colorimetría · Alma e Imagen",
   description:
     "Descubre los colores que armonizan contigo. Análisis de colorimetría personal de Alma e Imagen · The Academy, procesado en tu propio dispositivo.",
+  openGraph: {
+    type: "website",
+    locale: "es_CO",
+    url: "/",
+    siteName: "Alma e Imagen · The Academy",
+    title: "Colorimetría · Alma e Imagen",
+    description: SHARE_DESCRIPTION,
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Colorimetría · Alma e Imagen",
+    description: SHARE_DESCRIPTION,
+  },
   appleWebApp: {
     capable: true,
     title: "Colorimetría",
     statusBarStyle: "default",
-  },
-  icons: {
-    apple: "/icons/apple-touch-icon.png",
   },
 };
 

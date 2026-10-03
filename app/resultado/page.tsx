@@ -4,6 +4,7 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import {
   AlertTriangle,
+  ArrowUpRight,
   Brush,
   ChevronDown,
   ChevronRight,
@@ -43,6 +44,7 @@ import { useTabHash } from "@/lib/hooks/use-tab-hash";
 import { LoadingScreen } from "@/components/ui/LoadingScreen";
 import { SEASONS } from "@/data/seasons";
 import { generateReportPdf } from "@/lib/report/generate-pdf";
+import { ACADEMY_URL } from "@/lib/site";
 import { buildStyleGuide } from "@/lib/style/build-style-guide";
 import { formatMetal, COMPATIBILITY_LABELS } from "@/lib/style/harmony";
 import { faceAvoidAdvice } from "@/lib/style/face-colors";
@@ -291,6 +293,17 @@ export default function ResultadoPage() {
             de imagen personal de The Academy. Leidy Sepúlveda te acompaña en el proceso
             completo: sanación emocional, amor propio e imagen.
           </p>
+          {/* Pestaña nueva: el resultado vive en esta sesión y no debe perderse. */}
+          <a
+            href={ACADEMY_URL}
+            target="_blank"
+            rel="noopener noreferrer"
+            aria-label="Conoce The Academy (se abre en una pestaña nueva)"
+            className="mt-5 inline-flex min-h-11 items-center gap-2 rounded-full bg-white px-6 font-sans text-sm font-semibold text-brand-700 shadow-card transition-colors hover:bg-blush-100 active:bg-blush-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-brand-600"
+          >
+            Conoce The Academy
+            <ArrowUpRight size={16} strokeWidth={1.75} aria-hidden="true" />
+          </a>
         </Card>
       </TabPanel>
 

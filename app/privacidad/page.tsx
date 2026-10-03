@@ -4,8 +4,8 @@ import { LegalSection } from "@/components/ui/LegalSection";
 import { DeleteDataButtons } from "@/components/ui/DeleteDataButtons";
 
 export const metadata: Metadata = {
-  title: "Privacidad — ColorIA",
-  description: "Cómo se procesa tu fotografía y tus datos en ColorIA.",
+  title: "Privacidad · Colorimetría · Alma e Imagen",
+  description: "Cómo se procesa tu fotografía y tus datos en la herramienta de colorimetría de Alma e Imagen.",
 };
 
 export default function PrivacidadPage() {
@@ -22,7 +22,7 @@ export default function PrivacidadPage() {
 
       <LegalSection title="Qué información se procesa">
         <p>
-          ColorIA procesa una fotografía tipo selfie que tú tomas o subes, y las
+          La herramienta de colorimetría procesa una fotografía tipo selfie que tú tomas o subes, y las
           respuestas que das en el cuestionario (color natural de cabello, si está
           teñido, color de ojos, reacción de la piel al sol, preferencia de metal y
           percepción de contraste).
