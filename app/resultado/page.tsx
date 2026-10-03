@@ -65,11 +65,18 @@ const TABS = [
   { id: "belleza", label: "Cabello y maquillaje", icon: Brush },
   { id: "gafas", label: "Gafas", icon: Glasses },
   { id: "favoritos", label: "Favoritos", icon: Heart },
-  { id: "informe", label: "Informe", icon: Download },
+  { id: "informe", label: "Informe PDF", icon: Download },
 ] as const satisfies readonly TabItem[];
 
 const TAB_IDS = TABS.map((t) => t.id);
 type TabId = (typeof TABS)[number]["id"];
+
+function scrollToReport() {
+  document.getElementById("descargar-informe")?.scrollIntoView({
+    behavior: window.matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth",
+    block: "start",
+  });
+}
 
 export default function ResultadoPage() {
   const router = useRouter();
@@ -109,6 +116,24 @@ export default function ResultadoPage() {
     // favoritos viven en localStorage, así que dejarlos haría falsa la promesa.
     if (alsoClearFavorites) clearFavorites();
   };
+
+  // Atajo desde la portada al botón del PDF, que vive en la última pestaña.
+  // El panel aún no existe al hacer clic: se baja hasta él en el efecto, tras montarse.
+  const pendingReportScroll = useRef(false);
+  const openReport = () => {
+    if (activeTab === "informe") {
+      scrollToReport();
+      return;
+    }
+    pendingReportScroll.current = true;
+    setTab("informe");
+  };
+
+  useEffect(() => {
+    if (activeTab !== "informe" || !pendingReportScroll.current) return;
+    pendingReportScroll.current = false;
+    scrollToReport();
+  }, [activeTab]);
 
   // La guía es determinista, así que memoizarla solo evita recalcular al
   // cambiar de pestaña; el resultado sería idéntico.
@@ -188,6 +213,15 @@ export default function ResultadoPage() {
               Analizando la forma de tu rostro…
             </p>
           )}
+
+          <button
+            type="button"
+            onClick={openReport}
+            className="mx-auto mt-4 inline-flex min-h-11 items-center gap-2 rounded-full border border-border-interactive bg-white/80 px-5 font-sans text-sm font-medium text-brand-700 shadow-card backdrop-blur-sm transition-colors hover:border-brand-500 active:bg-blush-100 focus:outline-none focus-visible:ring-2 focus-visible:ring-brand-500 focus-visible:ring-offset-2 focus-visible:ring-offset-blush"
+          >
+            <Download size={17} strokeWidth={1.75} aria-hidden="true" />
+            Descargar mi informe PDF
+          </button>
         </div>
       </section>
 
@@ -691,7 +725,10 @@ export default function ResultadoPage() {
           photoDataUrl={photoDataUrl}
         />
 
-        <section className="mb-8 rounded-[1.75rem] border border-line bg-white p-5 shadow-card">
+        <section
+          id="descargar-informe"
+          className="mb-8 scroll-mt-36 rounded-[1.75rem] border border-line bg-white p-5 shadow-card"
+        >
           <span className="label-brand">Para llevar</span>
           <h2 className="mb-4 mt-2 font-serif text-2xl font-light text-ink">
             Descargar informe
